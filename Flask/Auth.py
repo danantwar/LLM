@@ -16,7 +16,7 @@ def GetAuthToken():
 
 # Print the response
  helixToken="AR-JWT "+response.text
- print(helixToken)
+ #print(helixToken)
  
 #GetAuthToken() 
  return helixToken

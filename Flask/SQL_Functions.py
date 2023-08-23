@@ -21,10 +21,10 @@ def create_connection():
 def create_record(connection, data):
     try:
         cursor = connection.cursor()
-        insert_query = "INSERT INTO public.\"LLMData\" (source, reference, content) VALUES (%s, %s, %s)"
+        insert_query = "INSERT INTO public.\"LLMData\" (source, reference, content, content_parts) VALUES (%s, %s, %s, %s)"
         cursor.execute(insert_query, data)
         connection.commit()
-        print("Record inserted successfully")        
+       #print("Record inserted successfully")        
     except (Exception, Error) as error:
         print("Error while inserting a record:", error)
 

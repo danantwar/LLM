@@ -1,7 +1,7 @@
 # app.py
 import requests
 from Auth import GetAuthToken as Auth
-from configs import GetIncidentsUrl as IncidentsUrl
+from configs import GetIncDataUrl as IncidentsUrl
 from SQL_Functions import create_connection as dbconnection
 from SQL_Functions import create_record as insertrecord
 from flask import Flask, request, jsonify
