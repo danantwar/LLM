@@ -8,8 +8,8 @@ from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-#@app.get("/records")
-#def get_countries():
+# @app.get("/records")
+# def get_countries():
     #return jsonify(countries)
 
 @app.post("/load")
