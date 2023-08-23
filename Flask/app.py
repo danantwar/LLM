@@ -41,7 +41,7 @@ def loadDataFromHelix():
                     # Insert records in Databse table
                     insertrecord(conn, data)
                     counter = counter + 1
-                     #close database connection
+                    #close database connection
             conn.close()
             return {"Status" : "Success", "Records Loaded" : str(counter)} , 200
         
