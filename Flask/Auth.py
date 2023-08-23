@@ -4,7 +4,7 @@ import requests
 # Create operation
 def GetAuthToken():
 # API endpoint URL
- tokenurl = configs.BaseUrl + configs.AuthUrl
+ tokenurl = configs.AuthUrl
 # Form data to be sent
  tokendata = {
     'username': configs.username,

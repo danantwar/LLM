@@ -21,7 +21,7 @@ def create_connection():
 def create_record(connection, data):
     try:
         cursor = connection.cursor()
-        insert_query = "INSERT INTO Records (status, description, ticket_id) VALUES (%s, %s, %s)"
+        insert_query = "INSERT INTO public.\"LLMData\" (source, reference, content) VALUES (%s, %s, %s)"
         cursor.execute(insert_query, data)
         connection.commit()
         print("Record inserted successfully")        
