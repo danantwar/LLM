@@ -1,24 +1,49 @@
 import json
 
-# Provided JSON array of element names
-json_array = [
-    "Infrastructure Change ID",
-    "Description",
-    "Detailed Description",
-    "Categorization Tier 1",
-    "Categorization Tier 2",
-    "Categorization Tier 3",
-    "Product Cat Tier 1",
-    "Product Cat Tier 2",
-    "Product Cat Tier 3"
-]
+# Provided JSON
+json_data = {
+    "entries": [
+        {
+            "values": {
+                "Ticket Number": "000000024525",
+                "Description": "Issue",
+                "Detailed Description": "abcd",
+                "Closure Product Category Tier1": "a",
+                "Closure Product Category Tier2": "b",
+                "Closure Product Category Tier3": "c"
+            },
+            "_links": {
+                "self": [
+                    {
+                        "href": "https://abc.com"
+                    }
+                ]
+            }
+        }
+    ],
+    "_links": {
+        "next": [
+            {
+                "href": "https://abc.com"
+            }
+        ],
+        "self": [
+            {
+                "href": "https://abc.com"
+            }
+        ]
+    }
+}
 
-# Generate the formatted strings for each element
-formatted_strings = [
-    f"{element} : {json_array[element]}"
-    for element in json_array
-]
+# Extract values from the JSON
+entries = json_data.get("entries", [])
+result_text = ""
 
-# Print the formatted strings
-for formatted_string in formatted_strings:
-    print(formatted_string)
+# Iterate through entries and their values
+for entry in entries:
+    values = entry.get("values", {})
+    for key, value in values.items():
+        result_text += f"{key}: {value},\n"
+
+# Print the generated text output
+print(result_text)
