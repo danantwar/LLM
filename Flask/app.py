@@ -1,4 +1,5 @@
 # app.py
+"""
 import requests
 from Auth import GetAuthToken as Auth
 from configs import GetIncDataUrl as IncidentsUrl
@@ -46,3 +47,27 @@ def loadDataFromHelix():
             return {"Status" : "Success", "Records Loaded" : str(counter)} , 200
         
     return {"error": "Request must be JSON"}, 415  
+
+"""
+
+from flask import Flask, render_template, request
+from HelixLoad import myfun as myfun
+
+
+app = Flask(__name__)
+
+@app.route('/', methods=['GET', 'POST'])
+
+def index():
+    if request.method == 'POST':
+        Source = request.form['Source']
+        if Source =="Helix":
+            myfun()
+            userMsg = f"Hello, {Source} data load into AI Model is Completed now!"
+            return render_template('index.html', greeting=userMsg)
+    return render_template('index.html')
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
+
