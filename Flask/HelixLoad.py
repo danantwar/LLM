@@ -1,12 +1,9 @@
 # app.py
 import configs as config
-from Auth import GetAuthToken as Auth
 from helixLoadFunctions import loadHelixRecords as loadHelixData
-           
-# Starting point of Execution                    
-
-# Generate Helix Auth Token
-helixToken= Auth()
+            
+#load_type = "FULL"
+load_type = "DELTA"
 
 # Get details of Helix forms and URLs
 HelixDetails = {
@@ -21,11 +18,10 @@ HelixDetails = {
     "KnownError" : config.GetPbmKEUrl,
     "KnownErrorWorkLog" : config.GetPbmKEWLUrl,
     "Knowledge" : config.GetRkmKEUrl
-    }
-    
+}
 for form in HelixDetails:
     url = HelixDetails[form]   
-   # print("Calling Process_records function")   
-    loadHelixData(form, url, helixToken)
-    #print("Records Loaded" + str(records_count))
+    # print("Calling Process_records function")
+    loadHelixData(form, url, load_type)
+    # print("Records Loaded" + str(records_count))
 

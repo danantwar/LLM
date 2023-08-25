@@ -1,15 +1,25 @@
 import requests
+import datetime
+from Auth import GetAuthToken as Auth
 from SQL_Functions import create_connection as dbconnection
-from SQL_Functions import create_record as insertrecord
+from SQL_Functions import create_datarecords as loadrecord
+from SQL_Functions import create_loadhistory as loadhistory
+from SQL_Functions import read_records as getDBRecords
+source = "HELIX"
 
-def loadHelixRecords(form, url, helixToken):
+def loadHelixRecords(form, url, load_type):
     # Initialize Variables
     offset  = 0
     limit = 1000  
     recordsExist = False
     getrecords = True
+    timestamp = createLoadHistoryInDB()
+    
+    if load_type == "DELTA":
+        timestamp = getLastLoadTimestamp()
+        
     while getrecords:     
-        response_data = getRecords(url, offset, limit, helixToken)
+        response_data = getRecords(url, offset, limit, timestamp, load_type)
         entries_count = len(response_data["entries"])
         
         if entries_count != 0:
@@ -23,226 +33,88 @@ def loadHelixRecords(form, url, helixToken):
             print("\nRecord Exist Flag : " + str(recordsExist) + "\n")    
             break            
         
-        if recordsExist:
-                if form == "Incident":    
-                    loadIncDataInDB(response_data)               
-                if form == "IncidentWorkLog":
-                    loadIncWLDataInDB(response_data)
-                if form == "Change":    
-                    loadCrqDataInDB(response_data)               
-                if form == "ChangeWorkLog":
-                    loadCrqWLDataInDB(response_data)
-                if form == "WorkOrder":    
-                    loadWoDataInDB(response_data)               
-                if form == "WorkOrderWorkLog":
-                    loadWoWLDataInDB(response_data)
-                if form == "Problem":    
-                    loadPbmDataInDB(response_data)               
-                if form == "ProblemWorkLog":
-                    loadPbmWLDataInDB(response_data)
-                if form == "KnownError":    
-                    loadPbmKEDataInDB(response_data)               
-                if form == "KnownErrorWorkLog":
-                    loadPbmKEWLDataInDB(response_data)
-                if form == "Knowledge":
-                    loadKmDataInDB(response_data)                    
-        
-                
+        if recordsExist:                 
+            loadDataInDB(response_data, form)                    
 #-----------------------------------------------------------------
-  
-def getRecords(url, offset , limit, token):
+def getRecords(url, offset, limit, load_timestamp, load_type):
       # print("Inside getRecords function")   
-        url = url + "&offset=" + str(offset) + "&limit=" + str(limit)
+        authToken = Auth()
+        if load_type == "FULL":
+            url = url + "&offset=" + str(offset) + "&limit=" + str(limit)
+        elif load_type == "DELTA" and "Knowledge" not in url :
+            url = url + "&offset=" + str(offset) + "&limit=" + str(limit) + "&q='Last Modified Date' > " + "\"" + load_timestamp + "\""
+        elif load_type == "DELTA" and "Knowledge" in url :
+            url = url + "&offset=" + str(offset) + "&limit=" + str(limit) + "&q='Modified Date' > " + "\"" + load_timestamp + "\""
+        
         print ("URL : " + url)
+        
         # Prepare HTTP Headers for Helix Call
         HttpHeaders = {
-                'Authorization': token
+                'Authorization': authToken
             }
         HttpResponse = requests.get(url, headers=HttpHeaders)
         response = HttpResponse.json()
+        print (response)
         return response
 #-----------------------------------------------------------------
-def loadIncDataInDB(json_response):
-    # Initialize variables
-    content_limit = 500
-    content_len = 0
-    # Initialize DB Connection
-    conn = dbconnection()  
-    for entry in json_response['entries']:
-        values = entry['values']
-        reference = values['Incident Number']        
-        record_data = ""
-        for key, value in values.items():
-            record_data += f"{key}: {value},\n"
-
-        content_len = len(record_data)
-        content_splits, content_rem = divmod(content_len, content_limit)
-        if content_rem != 0:
-            content_splits = content_splits + 1
-        
-        for split in range(content_splits):
-            content = record_data[split * content_limit : (split + 1) * content_limit]                 
-            content_parts = str(split+1) + "/" + str(content_splits)
-            data = ('Helix', reference, content, content_parts)                
-            # Insert records in Database table            
-            insertrecord(conn, data)    
-    
-    # Close DB Connection
-    conn.close()
-#-----------------------------------------------------------------    
-def loadIncWLDataInDB(json_response):
-    # Initialize variables
-    content_limit = 1000
-    content_len = 0
-    # Initialize DB Connection
+def createLoadHistoryInDB():
+    current_datetime = datetime.datetime.now(datetime.timezone.utc)
+    load_timestamp = current_datetime.strftime('%m/%d/%Y %H:%M:%S %p')
     conn = dbconnection() 
-    for entry in json_response['entries']:
-        values = entry['values']
-        reference = values['Incident Number'] + "_" + values['Work Log ID']
-        record_data = "" 
-        #print(record_data)
-        for key, value in values.items():
-            record_data += f"{key}: {value},\n"
-                                
-        content_len = len(record_data)
-        content_splits, content_rem = divmod(content_len, content_limit)
-        if content_rem != 0:
-            content_splits = content_splits + 1
-        
-        for split in range(content_splits):
-            content = record_data[split * content_limit : (split + 1) * content_limit]                 
-            # print("Content")   
-            content_parts = str(split+1) + "/" + str(content_splits)
-            data = ('Helix', reference, content, content_parts)            
-            # Insert records in Database table            
-            insertrecord(conn, data)       
-    # Close DB Connection
-    conn.close()                               
-#-----------------------------------------------------------------  
-def loadCrqDataInDB(json_response):
-    # Initialize variables
-    content_limit = 500
-    content_len = 0
-    # Initialize DB Connection
-    conn = dbconnection()  
-    for entry in json_response['entries']:
-        values = entry['values']
-        reference = values['Infrastructure Change ID']        
-        record_data = ""
-        for key, value in values.items():
-            record_data += f"{key}: {value},\n"
-
-        content_len = len(record_data)
-        content_splits, content_rem = divmod(content_len, content_limit)
-        if content_rem != 0:
-            content_splits = content_splits + 1
-        
-        for split in range(content_splits):
-            content = record_data[split * content_limit : (split + 1) * content_limit]                 
-            # print("Content")   
-            content_parts = str(split+1) + "/" + str(content_splits)
-            data = ('Helix', reference, content, content_parts)                
-            # Insert records in Database table            
-            insertrecord(conn, data)    
-    
-    # Close DB Connection
+    data = (source, load_timestamp)                
+    # Insert records in Database table            
+    loadhistory(conn, data)
     conn.close()
-#-----------------------------------------------------------------    
-def loadCrqWLDataInDB(json_response):
-    # Initialize variables
-    content_limit = 1000
-    content_len = 0
-    # Initialize DB Connection
-    conn = dbconnection() 
-    for entry in json_response['entries']:
-        values = entry['values']
-        reference = values['Infrastructure Change ID'] + "_" + values['Work Log ID']
-        record_data = "" 
-        #print(record_data)
-        for key, value in values.items():
-            record_data += f"{key}: {value},\n"
-                                
-        content_len = len(record_data)
-        content_splits, content_rem = divmod(content_len, content_limit)
-        if content_rem != 0:
-            content_splits = content_splits + 1
-        
-        for split in range(content_splits):
-            content = record_data[split * content_limit : (split + 1) * content_limit]                 
-            content_parts = str(split+1) + "/" + str(content_splits)
-            data = ('Helix', reference, content, content_parts)            
-            # Insert records in Database table            
-            insertrecord(conn, data)       
-    # Close DB Connection
-    conn.close()                               
-#-----------------------------------------------------------------  
-def loadWoDataInDB(json_response):
-    # Initialize variables
-    content_limit = 500
-    content_len = 0
-    # Initialize DB Connection
-    conn = dbconnection()  
-    for entry in json_response['entries']:
-        values = entry['values']
-        reference = values['Work Order ID']        
-        record_data = ""
-        for key, value in values.items():
-            record_data += f"{key}: {value},\n"
-
-        content_len = len(record_data)
-        content_splits, content_rem = divmod(content_len, content_limit)
-        if content_rem != 0:
-            content_splits = content_splits + 1
-        
-        for split in range(content_splits):
-            content = record_data[split * content_limit : (split + 1) * content_limit]                 
-            # print("Content")   
-            content_parts = str(split+1) + "/" + str(content_splits)
-            data = ('Helix', reference, content, content_parts)                
-            # Insert records in Database table            
-            insertrecord(conn, data)    
-    
-    # Close DB Connection
-    conn.close()
-#-----------------------------------------------------------------    
-def loadWoWLDataInDB(json_response):
-    # Initialize variables
-    content_limit = 1000
-    content_len = 0
-    # Initialize DB Connection
-    conn = dbconnection() 
-    for entry in json_response['entries']:
-        values = entry['values']
-        reference = values['Work Order ID'] + "_" + values['Work Log ID']
-        record_data = "" 
-        #print(record_data)
-        for key, value in values.items():
-            record_data += f"{key}: {value},\n"
-                                
-        content_len = len(record_data)
-        content_splits, content_rem = divmod(content_len, content_limit)
-        if content_rem != 0:
-            content_splits = content_splits + 1
-        
-        for split in range(content_splits):
-            content = record_data[split * content_limit : (split + 1) * content_limit]                 
-            content_parts = str(split+1) + "/" + str(content_splits)
-            data = ('Helix', reference, content, content_parts)            
-            # Insert records in Database table            
-            insertrecord(conn, data)       
-    # Close DB Connection
-    conn.close()                               
+    return load_timestamp
 #-----------------------------------------------------------------
-def loadPbmDataInDB(json_response):
+def getLastLoadTimestamp():
+    conn = dbconnection()
+    query = "SELECT load_timestamp FROM public.\"LoadHistory\" LIMIT 1"
+
+    try:
+        cursor = conn.cursor()        
+        cursor.execute(query)
+        records = cursor.fetchall()
+        for record in records:
+           load_timestamp = record[0]
+    except (Exception) as error:
+        print("Error while reading records:", error)
+    
+    conn.close()
+    return load_timestamp
+#-----------------------------------------------------------------
+def loadDataInDB(json_response, form):
     # Initialize variables
-    content_limit = 500
+    content_limit = 1000
     content_len = 0
     # Initialize DB Connection
     conn = dbconnection()  
     for entry in json_response['entries']:
         values = entry['values']
-        reference = values['Problem Investigation ID']        
         record_data = ""
+        if form == "Incident":    
+            reference = values['Incident Number']
+        if form == "IncidentWorkLog":
+            reference = values['Incident Number'] + "_" + values['Work Log ID']
+        if form == "Change":    
+            reference = values['Infrastructure Change ID']
+        if form == "ChangeWorkLog":
+            reference = values['Infrastructure Change ID'] + "_" + values['Work Log ID']
+        if form == "WorkOrder":    
+            reference = values['Work Order ID']
+        if form == "WorkOrderWorkLog":
+            reference = values['Work Order ID'] + "_" + values['Work Log ID']
+        if form == "Problem":    
+            reference = values['Problem Investigation ID']
+        if form == "ProblemWorkLog":
+            reference = values['Problem Investigation ID'] + "_" + values['Work Log ID']
+        if form == "KnownError":    
+            reference = values['Known Error ID']
+        if form == "KnownErrorWorkLog":
+            reference = values['Known Error ID'] + "_" + values['Work Log ID']
+        if form == "Knowledge":
+            reference = values['DocID']
+                    
         for key, value in values.items():
             record_data += f"{key}: {value},\n"
 
@@ -253,125 +125,11 @@ def loadPbmDataInDB(json_response):
         
         for split in range(content_splits):
             content = record_data[split * content_limit : (split + 1) * content_limit]                 
-            # print("Content")   
             content_parts = str(split+1) + "/" + str(content_splits)
-            data = ('Helix', reference, content, content_parts)                
+            data = (source, reference, content, content_parts)                
             # Insert records in Database table            
-            insertrecord(conn, data)    
+            loadrecord(conn, data)    
     
     # Close DB Connection
     conn.close()
 #-----------------------------------------------------------------    
-def loadPbmWLDataInDB(json_response):
-    # Initialize variables
-    content_limit = 1000
-    content_len = 0
-    # Initialize DB Connection
-    conn = dbconnection() 
-    for entry in json_response['entries']:
-        values = entry['values']
-        reference = values['Problem Investigation ID'] + "_" + values['Work Log ID']
-        record_data = "" 
-        #print(record_data)
-        for key, value in values.items():
-            record_data += f"{key}: {value},\n"
-                                
-        content_len = len(record_data)
-        content_splits, content_rem = divmod(content_len, content_limit)
-        if content_rem != 0:
-            content_splits = content_splits + 1
-        
-        for split in range(content_splits):
-            content = record_data[split * content_limit : (split + 1) * content_limit]                 
-            content_parts = str(split+1) + "/" + str(content_splits)
-            data = ('Helix', reference, content, content_parts)            
-            # Insert records in Database table            
-            insertrecord(conn, data)       
-    # Close DB Connection
-    conn.close()                               
-#-----------------------------------------------------------------
-def loadPbmKEDataInDB(json_response):
-    # Initialize variables
-    content_limit = 500
-    content_len = 0
-    # Initialize DB Connection
-    conn = dbconnection()  
-    for entry in json_response['entries']:
-        values = entry['values']
-        reference = values['Known Error ID']        
-        record_data = ""
-        for key, value in values.items():
-            record_data += f"{key}: {value},\n"
-
-        content_len = len(record_data)
-        content_splits, content_rem = divmod(content_len, content_limit)
-        if content_rem != 0:
-            content_splits = content_splits + 1
-        
-        for split in range(content_splits):
-            content = record_data[split * content_limit : (split + 1) * content_limit]                 
-            # print("Content")   
-            content_parts = str(split+1) + "/" + str(content_splits)
-            data = ('Helix', reference, content, content_parts)                
-            # Insert records in Database table            
-            insertrecord(conn, data)    
-    
-    # Close DB Connection
-    conn.close()
-#-----------------------------------------------------------------    
-def loadPbmKEWLDataInDB(json_response):
-    # Initialize variables
-    content_limit = 1000
-    content_len = 0
-    # Initialize DB Connection
-    conn = dbconnection() 
-    for entry in json_response['entries']:
-        values = entry['values']
-        reference = values['Known Error ID'] + "_" + values['Work Log ID']
-        record_data = "" 
-        #print(record_data)
-        for key, value in values.items():
-            record_data += f"{key}: {value},\n"
-                                
-        content_len = len(record_data)
-        content_splits, content_rem = divmod(content_len, content_limit)
-        if content_rem != 0:
-            content_splits = content_splits + 1
-        
-        for split in range(content_splits):
-            content = record_data[split * content_limit : (split + 1) * content_limit]                 
-            content_parts = str(split+1) + "/" + str(content_splits)
-            data = ('Helix', reference, content, content_parts)            
-            # Insert records in Database table            
-            insertrecord(conn, data)       
-    # Close DB Connection
-    conn.close()                               
-#-----------------------------------------------------------------
-def loadKmDataInDB(json_response):
-    # Initialize variables
-    content_limit = 1000
-    content_len = 0
-    # Initialize DB Connection
-    conn = dbconnection() 
-    for entry in json_response['entries']:
-        values = entry['values']
-        reference = values['DocID']
-        record_data = "" 
-        #print(record_data)
-        for key, value in values.items():
-            record_data += f"{key}: {value},\n"
-                                
-        content_len = len(record_data)
-        content_splits, content_rem = divmod(content_len, content_limit)
-        if content_rem != 0:
-            content_splits = content_splits + 1
-        
-        for split in range(content_splits):
-            content = record_data[split * content_limit : (split + 1) * content_limit]                 
-            content_parts = str(split+1) + "/" + str(content_splits)
-            data = ('Helix', reference, content, content_parts)            
-            # Insert records in Database table            
-            insertrecord(conn, data)       
-    # Close DB Connection
-    conn.close()                               
-#-----------------------------------------------------------------

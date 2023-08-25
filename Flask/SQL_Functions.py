@@ -18,13 +18,23 @@ def create_connection():
         return None
 
 # Create operation
-def create_record(connection, data):
+def create_datarecords(connection, data):
     try:
         cursor = connection.cursor()
         insert_query = "INSERT INTO public.\"LLMData\" (source, reference, content, content_parts) VALUES (%s, %s, %s, %s)"
         cursor.execute(insert_query, data)
         connection.commit()
        #print("Record inserted successfully")        
+    except (Exception, Error) as error:
+        print("Error while inserting a record:", error)
+
+def create_loadhistory(connection, data):
+    try:
+        cursor = connection.cursor()
+        insert_query = "INSERT INTO public.\"LoadHistory\" (source, load_timestamp) VALUES (%s, %s)"
+        cursor.execute(insert_query, data)
+        connection.commit()
+        print("Load History Record Create Successfully")        
     except (Exception, Error) as error:
         print("Error while inserting a record:", error)
 
