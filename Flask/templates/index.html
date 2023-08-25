@@ -51,6 +51,35 @@
             background-color: #d13939;
         }
     </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const sourceDropdown = document.getElementById("Source");
+            const dependentDropdown = document.getElementById("LoadType");
+
+            const data = {
+                Helix: ["FULL", "DELTA", "Option 3"],
+                ServiceNow: ["Option A", "Option B", "Option C"],
+                Wikki: ["Item X", "Item Y", "Item Z"],
+                Other: ["Value Alpha", "Value Beta", "Value Gamma"],
+            };
+
+            sourceDropdown.addEventListener("change", function () {
+                const selectedSource = sourceDropdown.value;
+                const options = data[selectedSource];
+
+                dependentDropdown.innerHTML = "";
+
+                if (options) {
+                    options.forEach(function (option) {
+                        const optionElement = document.createElement("option");
+                        optionElement.value = option;
+                        optionElement.textContent = option;
+                        dependentDropdown.appendChild(optionElement);
+                    });
+                }
+            });
+        });
+    </script>
 </head>
 <body>
     <div class="container">
@@ -64,10 +93,15 @@
                 <option value="Other">Other</option>
             </select>
             <br><br>
+            <label for="LoadType">Load Type:</label>
+            <select id="LoadType" name="LoadType" required>
+                <!-- Options will be populated dynamically using JavaScript -->
+            </select>
+            <br><br>
             <button type="submit">Load Data</button>
         </form>
         {% if greeting %}
-            <h2>{{ greeting }}</h2>
+        <h2>{{ greeting }}</h2>
         {% endif %}
     </div>
 </body>

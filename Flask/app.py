@@ -51,7 +51,7 @@ def loadDataFromHelix():
 """
 
 from flask import Flask, render_template, request
-from HelixLoad import myfun as myfun
+from HelixLoad import initiateHelixLoad as initiateHelixLoad
 
 
 app = Flask(__name__)
@@ -61,8 +61,9 @@ app = Flask(__name__)
 def index():
     if request.method == 'POST':
         Source = request.form['Source']
-        if Source =="Helix":
-            myfun()
+        LoadType = request.form['LoadType']
+        if Source =="Helix" and LoadType !="" :
+            initiateHelixLoad(LoadType)
             userMsg = f"Hello, {Source} data load into AI Model is Completed now!"
             return render_template('index.html', greeting=userMsg)
     return render_template('index.html')
