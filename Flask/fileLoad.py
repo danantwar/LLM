@@ -1,15 +1,15 @@
 # Import the necessary Python libraries
 from flask import request
 from werkzeug.utils import secure_filename
-import webLoadFunctions as wb
+import SQL_Functions as sq
 
-def upload():
+def loadFromFile(inputFile):
     
     #Initialize Variables
     source = "FILE"
     
     # Get the file from the request
-    file = request.files['file']
+    file = inputFile
 
     # Save the file to a temporary location
     filename = secure_filename(file.filename)
@@ -23,5 +23,5 @@ def upload():
     curLoadTimeStamp = wb.addLoadHistoryInDB(source)
 
     # Load content in database
-    wb.loadDataInDB (source, filename, file_content)
+    sq.loadDataInDB (source, filename, file_content)
     

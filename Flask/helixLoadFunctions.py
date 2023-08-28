@@ -124,7 +124,7 @@ def loadDataInDB(source, json_response, form):
             content_parts = str(split+1) + "/" + str(content_splits)
             data = (source, reference, content, content_parts)                
             # Insert records in Database table            
-            sq.loadrecord(conn, data)    
+            sq.create_records(conn, data)    
     
     # Close DB Connection
     conn.close()
