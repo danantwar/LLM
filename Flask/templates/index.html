@@ -55,12 +55,14 @@
         document.addEventListener("DOMContentLoaded", function () {
             const sourceDropdown = document.getElementById("Source");
             const dependentDropdown = document.getElementById("LoadType");
+            const additionalFieldsContainer = document.getElementById("AdditionalFields");
+            const loadTypeLabel = document.getElementById("LoadTypeLabel"); // Add this line
 
             const data = {
-                Helix: ["FULL", "DELTA", "Option 3"],
-                ServiceNow: ["Option A", "Option B", "Option C"],
-                Wikki: ["Item X", "Item Y", "Item Z"],
-                Other: ["Value Alpha", "Value Beta", "Value Gamma"],
+                Helix: ["FULL", "DELTA"],
+                ServiceNow: ["FULL", "DELTA"],
+                Web: ["Text"],
+                File: ["Attachment"]
             };
 
             sourceDropdown.addEventListener("change", function () {
@@ -68,6 +70,7 @@
                 const options = data[selectedSource];
 
                 dependentDropdown.innerHTML = "";
+                additionalFieldsContainer.innerHTML = ""; // Clear additional fields
 
                 if (options) {
                     options.forEach(function (option) {
@@ -76,6 +79,31 @@
                         optionElement.textContent = option;
                         dependentDropdown.appendChild(optionElement);
                     });
+
+                    // Add additional fields based on selected source
+                    if (selectedSource === "File") {
+                        const fileInput = document.createElement("input");
+                        fileInput.type = "file";
+                        fileInput.name = "Attachment";
+                        fileInput.accept = ".txt,.pdf,.docx,.json"; // Specify allowed file types
+                        additionalFieldsContainer.appendChild(fileInput);
+                    } else if (selectedSource === "Web") {
+                        const urlInput = document.createElement("input");
+                        urlInput.type = "url";
+                        urlInput.name = "WebURL";
+                        urlInput.placeholder = "Enter URL";
+                        urlInput.size="40";
+                        additionalFieldsContainer.appendChild(urlInput);
+                    }
+
+                    // Hide or show Load Type field and label based on source
+                    if (selectedSource === "Helix" || selectedSource === "ServiceNow") {
+                        dependentDropdown.style.display = "block";
+                        loadTypeLabel.style.display = "block"; // Show the label
+                    } else {
+                        dependentDropdown.style.display = "none";
+                        loadTypeLabel.style.display = "none"; // Hide the label
+                    }
                 }
             });
         });
@@ -84,7 +112,8 @@
 <body>
     <div class="container">
         <h1>Data Loader</h1>
-        <form method="POST" action="/">
+        <!-- ... Existing code ... -->
+        <form method="POST" action="/" enctype="multipart/form-data">
             <label for="Source">Select the Data Source:</label>
             <select id="Source" name="Source" required>
                 <option value="Helix">Helix</option>
@@ -93,17 +122,22 @@
                 <option value="File">File</option>
             </select>
             <br><br>
-            <label for="LoadType">Load Type:</label>
+            <label id="LoadTypeLabel" for="LoadType">Load Type:</label>
             <select id="LoadType" name="LoadType" required>
-                <option value="FULL">FULL</option>
-                <option value="DELTA">DELTA</option>
+                <!-- Options will be populated dynamically using JavaScript -->
             </select>
+            <br><br>
+            <div id="AdditionalFields">
+                <!-- Additional fields will be added dynamically using JavaScript -->
+            </div>
+            <input type="hidden" id="GreetingInput" name="Greeting">
             <br><br>
             <button type="submit">Load Data</button>
         </form>
-         {% if greeting %}
+        {% if greeting %}
         <h2>{{ greeting }}</h2>
         {% endif %}
+    </div>
     </div>
 </body>
 </html>

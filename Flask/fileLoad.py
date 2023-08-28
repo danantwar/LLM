@@ -2,6 +2,7 @@
 from flask import request
 from werkzeug.utils import secure_filename
 import SQL_Functions as sq
+import webLoadFunctions as wb
 
 def loadFromFile(inputFile):
     
@@ -23,5 +24,5 @@ def loadFromFile(inputFile):
     curLoadTimeStamp = wb.addLoadHistoryInDB(source)
 
     # Load content in database
-    sq.loadDataInDB (source, filename, file_content)
+    wb.loadDataInDB (source, filename, file_content)
     
