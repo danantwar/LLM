@@ -95,12 +95,13 @@
             <br><br>
             <label for="LoadType">Load Type:</label>
             <select id="LoadType" name="LoadType" required>
-                <!-- Options will be populated dynamically using JavaScript -->
+                <option value="FULL">FULL</option>
+                <option value="DELTA">DELTA</option>
             </select>
             <br><br>
             <button type="submit">Load Data</button>
         </form>
-        {% if greeting %}
+         {% if greeting %}
         <h2>{{ greeting }}</h2>
         {% endif %}
     </div>

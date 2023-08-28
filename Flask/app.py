@@ -50,7 +50,7 @@ def loadDataFromHelix():
 
 """
 
-from flask import Flask, render_template, request
+from flask import Flask, flash, render_template, request
 from HelixLoad import initiateHelixLoad as initiateHelixLoad
 
 
@@ -65,7 +65,8 @@ def index():
         if Source =="Helix" and LoadType !="" :
             initiateHelixLoad(LoadType)
             userMsg = f"Hello, {Source} data load into AI Model is Completed now!"
-            return render_template('index.html', greeting=userMsg)
+            #flash(userMsg, category='success')
+            return render_template('index.html', greeting = userMsg)
     return render_template('index.html')
 
 if __name__ == '__main__':

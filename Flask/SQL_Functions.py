@@ -2,7 +2,7 @@ import psycopg2
 from psycopg2 import Error
 
 # Function to establish a connection to the PostgreSQL database
-def create_connection():
+def getconnection():
     try:
         connection = psycopg2.connect(
             user="postgres",
@@ -18,7 +18,7 @@ def create_connection():
         return None
 
 # Create operation
-def create_datarecords(connection, data):
+def create_records(connection, data):
     try:
         cursor = connection.cursor()
         insert_query = "INSERT INTO public.\"LLMData\" (source, reference, content, content_parts) VALUES (%s, %s, %s, %s)"
@@ -72,6 +72,6 @@ def delete_record(connection, id):
     except (Exception, Error) as error:
         print("Error while deleting a record:", error)
 
-con = create_connection()
+con = getconnection()
 if con != 0:
  print("DB Connection is Established")

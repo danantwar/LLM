@@ -1,23 +1,19 @@
 import requests
 import datetime
 from Auth import GetAuthToken as Auth
-from SQL_Functions import create_connection as dbconnection
-from SQL_Functions import create_datarecords as loadrecord
-from SQL_Functions import create_loadhistory as loadhistory
-from SQL_Functions import read_records as getDBRecords
-source = "HELIX"
+import SQL_Functions as sq
 
 def loadHelixRecords(form, url, load_type):
     # Initialize Variables
+    source = "HELIX"
     offset  = 0
     limit = 1000  
     recordsExist = False
     getrecords = True
-    timestamp = createLoadHistoryInDB()
-    
+    timestamp = createLoadHistoryInDB(source)
+    print(load_type)
     if load_type == "DELTA":
-        timestamp = getLastLoadTimestamp()
-        
+        timestamp = getLastLoadTimestamp()        
     while getrecords:     
         response_data = getRecords(url, offset, limit, timestamp, load_type)
         entries_count = len(response_data["entries"])
@@ -34,7 +30,7 @@ def loadHelixRecords(form, url, load_type):
             break            
         
         if recordsExist:                 
-            loadDataInDB(response_data, form)                    
+            loadDataInDB(source, response_data, form)                    
 #-----------------------------------------------------------------
 def getRecords(url, offset, limit, load_timestamp, load_type):
       # print("Inside getRecords function")   
@@ -54,21 +50,21 @@ def getRecords(url, offset, limit, load_timestamp, load_type):
             }
         HttpResponse = requests.get(url, headers=HttpHeaders)
         response = HttpResponse.json()
-        print (response)
+        
         return response
 #-----------------------------------------------------------------
-def createLoadHistoryInDB():
+def createLoadHistoryInDB(source):
     current_datetime = datetime.datetime.now(datetime.timezone.utc)
     load_timestamp = current_datetime.strftime('%m/%d/%Y %H:%M:%S %p')
-    conn = dbconnection() 
+    conn = sq.getconnection() 
     data = (source, load_timestamp)                
     # Insert records in Database table            
-    loadhistory(conn, data)
+    sq.create_loadhistory(conn, data)
     conn.close()
     return load_timestamp
 #-----------------------------------------------------------------
 def getLastLoadTimestamp():
-    conn = dbconnection()
+    conn = sq.getconnection()
     query = "SELECT load_timestamp FROM public.\"LoadHistory\" LIMIT 1"
 
     try:
@@ -83,12 +79,12 @@ def getLastLoadTimestamp():
     conn.close()
     return load_timestamp
 #-----------------------------------------------------------------
-def loadDataInDB(json_response, form):
+def loadDataInDB(source, json_response, form):
     # Initialize variables
     content_limit = 1000
-    content_len = 0
+    content_len = 0   
     # Initialize DB Connection
-    conn = dbconnection()  
+    conn = sq.getconnection()  
     for entry in json_response['entries']:
         values = entry['values']
         record_data = ""
@@ -128,7 +124,7 @@ def loadDataInDB(json_response, form):
             content_parts = str(split+1) + "/" + str(content_splits)
             data = (source, reference, content, content_parts)                
             # Insert records in Database table            
-            loadrecord(conn, data)    
+            sq.loadrecord(conn, data)    
     
     # Close DB Connection
     conn.close()
