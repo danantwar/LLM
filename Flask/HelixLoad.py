@@ -8,8 +8,8 @@ def initiateHelixLoad(LoadType):
 #    load_type = LoadType
     # Get details of Helix forms and URLs
     HelixDetails = {
-#        "Incident" : config.GetIncDataUrl,
- #       "IncidentWorkLog" : config.GetIncWorkLogsUrl,
+        "Incident" : config.GetIncDataUrl,
+        "IncidentWorkLog" : config.GetIncWorkLogsUrl,
         "Change" : config.GetCrqUrl,
         "ChangeWorkLog" : config.GetCrqWLUrl,
         "WorkOrder" : config.GetWoUrl,
