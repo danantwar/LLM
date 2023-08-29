@@ -125,14 +125,16 @@ def index():
             print("I am on file")
             inputFile = request.files['Attachment']
             loadFromFile(inputFile)
-            print("File loaded")
+            userMsg=f"Hello, {Source} data load into AI Model is Completed now!"
+            return render_template('index.html', greeting=userMsg)
             
         if Source == "Web":
             WebURL = request.form['WebURL']
             print("I am on Web Page")
             print(WebURL)
             loadWebData(WebURL)
-            print("WEB URL data loaded")
+            userMsg=f"Hello, {Source} data load into AI Model is Completed now!"
+            return render_template('index.html', greeting=userMsg)
             
     return render_template('index.html')
 
