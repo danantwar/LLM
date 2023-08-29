@@ -13,8 +13,8 @@ def loadWebData(url):
         print(f"Contents of Website: {url} are already present in database.")
         
 
-url = "https://bmcapps.my.site.com/casemgmt/sc_KnowledgeArticle?sfdcid=kA33n000000YIu1CAG"
-loadWebData(url)
+# url = "https://bmcapps.my.site.com/casemgmt/sc_KnowledgeArticle?sfdcid=kA33n000000YIu1CAG"
+# loadWebData(url)
 
     
 

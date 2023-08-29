@@ -59,10 +59,9 @@
             const loadTypeLabel = document.getElementById("LoadTypeLabel"); // Add this line
 
             const data = {
-                Helix: ["FULL", "DELTA"],
-                ServiceNow: ["FULL", "DELTA"],
-                Web: ["Text"],
-                File: ["Attachment"]
+                HELIX: ["FULL", "DELTA"],
+                WEB: ["Text"],
+                FILE: ["Attachment"]
             };
 
             sourceDropdown.addEventListener("change", function () {
@@ -81,13 +80,13 @@
                     });
 
                     // Add additional fields based on selected source
-                    if (selectedSource === "File") {
+                    if (selectedSource === "FILE") {
                         const fileInput = document.createElement("input");
                         fileInput.type = "file";
                         fileInput.name = "Attachment";
                         fileInput.accept = ".txt,.pdf,.docx,.json"; // Specify allowed file types
                         additionalFieldsContainer.appendChild(fileInput);
-                    } else if (selectedSource === "Web") {
+                    } else if (selectedSource === "WEB") {
                         const urlInput = document.createElement("input");
                         urlInput.type = "url";
                         urlInput.name = "WebURL";
@@ -97,7 +96,7 @@
                     }
 
                     // Hide or show Load Type field and label based on source
-                    if (selectedSource === "Helix" || selectedSource === "ServiceNow") {
+                    if (selectedSource === "HELIX") {
                         dependentDropdown.style.display = "block";
                         loadTypeLabel.style.display = "block"; // Show the label
                     } else {
@@ -116,10 +115,9 @@
         <form method="POST" action="/" enctype="multipart/form-data">
             <label for="Source">Select the Data Source:</label>
             <select id="Source" name="Source" required>
-                <option value="Helix">Helix</option>
-                <option value="ServiceNow">ServiceNow</option>
-                <option value="Web">Web</option>
-                <option value="File">File</option>
+                <option value="HELIX">HELIX</option>
+                <option value="WEB">WEB</option>
+                <option value="FILE">FILE</option>
             </select>
             <br><br>
             <label id="LoadTypeLabel" for="LoadType">Load Type:</label>
