@@ -81,39 +81,34 @@ def getLastLoadTimestamp():
 #-----------------------------------------------------------------
 def loadDataInDB(source, json_response, form):
     # Initialize variables
-    content_limit = 1000
-    content_len = 0   
+    # content_limit = 1000
+    # content_len = 0   
     # Initialize DB Connection
     conn = sq.getconnection()  
     for entry in json_response['entries']:
         values = entry['values']
         record_data = ""
-        if form == "Incident":    
-            reference = values['Incident Number']
-        if form == "IncidentWorkLog":
-            reference = values['Incident Number'] + "_" + values['Work Log ID']
-        if form == "Change":    
-            reference = values['Infrastructure Change ID']
-        if form == "ChangeWorkLog":
-            reference = values['Infrastructure Change ID'] + "_" + values['Work Log ID']
-        if form == "WorkOrder":    
-            reference = values['Work Order ID']
-        if form == "WorkOrderWorkLog":
-            reference = values['Work Order ID'] + "_" + values['Work Log ID']
-        if form == "Problem":    
-            reference = values['Problem Investigation ID']
-        if form == "ProblemWorkLog":
-            reference = values['Problem Investigation ID'] + "_" + values['Work Log ID']
-        if form == "KnownError":    
-            reference = values['Known Error ID']
-        if form == "KnownErrorWorkLog":
-            reference = values['Known Error ID'] + "_" + values['Work Log ID']
+        record_metadata = ""
+        if form == "Incident" or form == "IncidentWorkLog" :    
+            reference = values['Incident Number']        
+        if form == "Change" or form == "ChangeWorkLog":
+            reference = values['Infrastructure Change ID']        
+        if form == "WorkOrder" or form == "WorkOrderWorkLog":
+            reference = values['Work Order ID']        
+        if form == "Problem" or form == "ProblemWorkLog":
+            reference = values['Problem Investigation ID']        
+        if form == "KnownError" or form == "KnownErrorWorkLog":
+            reference = values['Known Error ID']        
         if form == "Knowledge":
             reference = values['DocID']
                     
-        for key, value in values.items():
-            record_data += f"{key}: {value},\n"
-
+        for key, value in values.items():            
+            record_data += value
+            record_metadata += f"{key}: {value},\n"
+            
+            
+        '''
+        # Code to slpit the contents in shunk
         content_len = len(record_data)
         content_splits, content_rem = divmod(content_len, content_limit)
         if content_rem != 0:
@@ -122,9 +117,11 @@ def loadDataInDB(source, json_response, form):
         for split in range(content_splits):
             content = record_data[split * content_limit : (split + 1) * content_limit]                 
             content_parts = str(split+1) + "/" + str(content_splits)
-            data = (source, reference, content, content_parts)                
-            # Insert records in Database table            
-            sq.create_records(conn, data)    
+        '''    
+        content_splits = "1/1"
+        data = (source, reference, record_data, record_metadata, content_splits)
+        # Insert records in Database table            
+        sq.create_records(conn, data)    
     
     # Close DB Connection
     conn.close()

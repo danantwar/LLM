@@ -1,6 +1,5 @@
 # app.py
 from flask import Flask, render_template, request
-import re
 import helixLoad as helix
 import webLoad as web
 import fileLoad as file
