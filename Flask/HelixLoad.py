@@ -18,7 +18,11 @@ def initiateHelixLoad(LoadType):
         "ProblemWorkLog" : config.GetPbmWLUrl,
         "KnownError" : config.GetPbmKEUrl,
         "KnownErrorWorkLog" : config.GetPbmKEWLUrl,
-        "Knowledge" : config.GetRkmKEUrl
+        "KnowledgeHowTo" : config.GetRkmHowToUrl,
+        "KnowledgeKcs" : config.GetRkmKcsUrl,
+        "KnowledgeKe" : config.GetRkmKEUrl,
+        "KnowledgePbm" : config.GetRkmPbmUrl,
+        "KnowledgeRef" : config.GetRkmRefUrl,
     }
     
     for form in HelixDetails:

@@ -37,9 +37,9 @@ def getRecords(url, offset, limit, load_timestamp, load_type):
         authToken = Auth()
         if load_type == "FULL":
             url = url + "&offset=" + str(offset) + "&limit=" + str(limit)
-        elif load_type == "DELTA" and "Knowledge" not in url :
+        elif load_type == "DELTA" and "RKM:" not in url :
             url = url + "&offset=" + str(offset) + "&limit=" + str(limit) + "&q='Last Modified Date' > " + "\"" + load_timestamp + "\""
-        elif load_type == "DELTA" and "Knowledge" in url :
+        elif load_type == "DELTA" and "RKM:" in url :
             url = url + "&offset=" + str(offset) + "&limit=" + str(limit) + "&q='Modified Date' > " + "\"" + load_timestamp + "\""
         
         print ("URL : " + url)
@@ -81,8 +81,8 @@ def getLastLoadTimestamp():
 #-----------------------------------------------------------------
 def loadDataInDB(source, json_response, form):
     # Initialize variables
-    # content_limit = 1000
-    # content_len = 0   
+    content_limit = 1000
+    content_len = 0   
     # Initialize DB Connection
     conn = sq.getconnection()  
     for entry in json_response['entries']:
@@ -99,15 +99,16 @@ def loadDataInDB(source, json_response, form):
             reference = values['Problem Investigation ID']        
         if form == "KnownError" or form == "KnownErrorWorkLog":
             reference = values['Known Error ID']        
-        if form == "Knowledge":
+        if form in {"KnowledgeHowTo", "KnowledgeKcs", "KnowledgeKe", "KnowledgePbm", "KnowledgeRef"}:
             reference = values['DocID']
-                    
+
+
         for key, value in values.items():            
             record_data += str(value)
             record_metadata += f"{key}: {value},\n"
             
-            
-        '''
+           
+
         # Code to slpit the contents in chunk
         content_len = len(record_data)
         content_splits, content_rem = divmod(content_len, content_limit)
@@ -116,12 +117,12 @@ def loadDataInDB(source, json_response, form):
         
         for split in range(content_splits):
             content = record_data[split * content_limit : (split + 1) * content_limit]                 
-            content_parts = str(split+1) + "/" + str(content_splits)
-        '''    
-        content_splits = "1/1"
-        data = (source, reference, record_data, record_metadata, content_splits)
-        # Insert records in Database table            
-        sq.create_records(conn, data)    
+            content_parts = str(split+1) + "/" + str(content_splits)            
+            #content_splits = "1/1"
+            #data = (source, reference, record_data, record_metadata, content_splits)
+            data = (source, reference, content, record_metadata, content_parts)
+            # Insert records in Database table            
+            sq.create_records(conn, data)    
     
     # Close DB Connection
     conn.close()
