@@ -25,7 +25,8 @@ def loadDataInDB(source, filename, file_content):
         for split in range(content_splits):
             content = file_content[split * content_limit : (split + 1) * content_limit]                 
             content_parts = str(split+1) + "/" + str(content_splits)
-            data = (source, filename, content, content_parts)                
+            content_metadata = content
+            data = (source, filename, content, content_metadata, content_parts)                
             # Insert records in Database table            
             sq.create_records(conn, data)    
     print ("Parts: " + str(content_splits))

@@ -103,12 +103,12 @@ def loadDataInDB(source, json_response, form):
             reference = values['DocID']
                     
         for key, value in values.items():            
-            record_data += value
+            record_data += str(value)
             record_metadata += f"{key}: {value},\n"
             
             
         '''
-        # Code to slpit the contents in shunk
+        # Code to slpit the contents in chunk
         content_len = len(record_data)
         content_splits, content_rem = divmod(content_len, content_limit)
         if content_rem != 0:
