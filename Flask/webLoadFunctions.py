@@ -1,6 +1,7 @@
 import re
 from bs4 import BeautifulSoup
 import requests
+import openAIFunctions as ai
 import datetime
 import SQL_Functions as sq
 
@@ -76,6 +77,7 @@ def loadDataInDB(source, url, web_content):
     # Initialize DB Connection
     conn = sq.getconnection()  
     content_parts = "1/1"
+    embeddings = ai.generateEmbeddings(content, "text-embedding-ada-002")
     data = (source, url, content, content_metadata, content_parts)
     # Insert records in Database table            
     sq.create_records(conn, data)    
@@ -91,7 +93,7 @@ def loadKBDataInDB(source, url, web_content, web_metadata):
     content_metadata = web_metadata
     # using web scrapping need ot extract key value pair data form web page and store it in content variable
     content = web_content
-    
+    embeddings = ai.generateEmbeddings(content, "text-embedding-ada-002")
     '''
     content_len = len(web_content)
     content_splits, content_rem = divmod(content_len, content_limit)

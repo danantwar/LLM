@@ -1,6 +1,7 @@
 import requests
 import datetime
 from Auth import GetAuthToken as Auth
+import openAIFunctions as ai
 import SQL_Functions as sq
 
 def loadHelixRecords(form, url, load_type):
@@ -116,7 +117,8 @@ def loadDataInDB(source, json_response, form):
             content_splits = content_splits + 1
         
         for split in range(content_splits):
-            content = record_data[split * content_limit : (split + 1) * content_limit]                 
+            content = record_data[split * content_limit : (split + 1) * content_limit]
+            embeddings = ai.generateEmbeddings(content, "text-embedding-ada-002")
             content_parts = str(split+1) + "/" + str(content_splits)            
             #content_splits = "1/1"
             #data = (source, reference, record_data, record_metadata, content_splits)
