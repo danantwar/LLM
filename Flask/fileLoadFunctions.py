@@ -1,3 +1,4 @@
+import openAIFunctions as ai
 import SQL_Functions as sq
 import datetime
 import contentSpiltter as csplit
@@ -36,6 +37,7 @@ def loadDataInDB(source, filename, file_content):
         content_splits = content_splits + 1
         for split in range(content_splits):
             content = file_content[split * content_limit : (split + 1) * content_limit]                 
+            embeddings = ai.generateEmbeddings(content, "text-embedding-ada-002")
             content_parts = str(split+1) + "/" + str(content_splits)
             content_metadata = content
             data = (source, filename, content, content_metadata, content_parts)                
