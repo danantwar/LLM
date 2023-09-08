@@ -1,6 +1,8 @@
 import PyPDF2
 from docx import Document
 import json
+import langchain
+from langchain.document_loaders import PyPDFLoader
 
 def read_pdf(file_path):
     with open(file_path, 'rb') as pdf_file:
@@ -10,6 +12,14 @@ def read_pdf(file_path):
             page = pdf_reader.pages[page_num]
             text += page.extract_text()
         return text
+    
+def read_pdf_with_langchain(file_path):
+    loader = PyPDFLoader(file_path)
+    pages = loader.load_and_split()
+    text = ''
+    for page in pages:
+        text += page.page_content    
+    return text
 
 def read_docx(file_path):
     doc = Document(file_path)
@@ -29,7 +39,8 @@ def read_json(file_path):
 
 def read_file_content(file_path):
     if file_path.lower().endswith('.pdf'):
-        return read_pdf(file_path)
+       # return read_pdf(file_path)
+        return read_pdf_with_langchain(file_path)
     elif file_path.lower().endswith('.docx'):
         return read_docx(file_path)
     elif file_path.lower().endswith('.txt'):

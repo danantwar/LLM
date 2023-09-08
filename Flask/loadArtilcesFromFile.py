@@ -37,7 +37,7 @@ def extractWebPage(url, page_source):
 url_pattern = r'https?://\S+'
 
 # Open the file for reading
-myFile = 'C:\\Users\\jagadish.patil\\myTestEnv\\tempFiles\\BMCKBList.txt'
+myFile = 'C:\\Users\\jagadish.patil\\myTestEnv\\Files\\BMCKBList1.txt'
 with open(myFile, 'r') as file:
     # Loop through each line in the file
     for line in file:

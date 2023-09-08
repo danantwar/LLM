@@ -28,6 +28,16 @@ def loadFromFile(inputFile):
     # Load content in database
     fl.loadDataInDB (source, filename, file_content)
 
-#filename="test"
-#pdf_file_path = r'C:\Users\jagadish.patil\myTestEnv\Files\Impact of AI on Service Management(Team_Mavericks).pdf'   
-#loadFromFile(inputFile)
+def loadFileinBulk(file_name, file_Path):
+    
+    #Initialize Variables
+    source = "FILE"
+    
+    file_content = frf.read_file_content(file_Path)
+
+    # Add enty in history table for this file
+    fl.addLoadHistoryInDB(source)
+    file_content = file_content.replace('\r', '').replace('\n', '')
+    #file_content = file_content.replace('\xa0', ' ')
+    # Load content in database
+    fl.loadDataInDB (source, file_name, file_content)
