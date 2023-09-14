@@ -4,7 +4,8 @@ def generateEmbeddings(content, AImodel):
   # API endpoint URL
   embeddingsurl = 'https://api.openai.com/v1/embeddings'
   headers = {
-          'Authorization': "Bearer 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",
+          #'Authorization': "Bearer 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",
+          'Authorization': "Bearer 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",
           'Content-Type': 'application/json'
   }
   data =  {

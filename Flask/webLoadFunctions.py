@@ -4,6 +4,7 @@ import requests
 import openAIFunctions as ai
 import datetime
 import SQL_Functions as sq
+import contentSplitter as csplit
 
 
 #-----------------------------------------------------------------
@@ -57,60 +58,47 @@ def getWebData (url):
     return web_content
 #-----------------------------------------------------------------
 def loadDataInDB(source, url, web_content):
-    # Initialize variables
-    #content_limit = 1000
-    #content_len = 0
+
     content_metadata = web_content
-    # using web scrapping need ot extract key value pair data form web page and store it in content variable
     content = web_content
     
-    '''
-    content_len = len(web_content)
-    content_splits, content_rem = divmod(content_len, content_limit)
-    if content_rem != 0:
-        content_splits = content_splits + 1
-        for split in range(content_splits):
-            content = web_content[split * content_limit : (split + 1) * content_limit]                 
-            content_parts = str(split+1) + "/" + str(content_splits)
-    '''
-    
     # Initialize DB Connection
-    conn = sq.getconnection()  
-    content_parts = "1/1"
-    embeddings = ai.generateEmbeddings(content, "text-embedding-ada-002")
-    data = (source, url, content, content_metadata, content_parts)
-    # Insert records in Database table            
-    sq.create_records(conn, data)    
-    #print ("Parts: " + str(content_splits))
+    conn = sq.getconnection() 
+    # Code to slpit the contents in chunk  
+    chunks = csplit.contentspiltter(content)
+    for i, chunk in enumerate(chunks):
+        content_parts = str(i+1)+ "/" + str(len(chunks))
+        content_metadata = content_metadata
+        content = chunk.page_content
+        #embeddings = ai.generateEmbeddings(content, "text-embedding-ada-002")
+        #print(embeddings)
+        data = (source, url, content, content_metadata, content_parts)             
+        # Insert records in Database table            
+        sq.create_records(conn, data)   
+
     # Close DB Connection
     conn.close()
 #-----------------------------------------------------------------    
 #-----------------------------------------------------------------
 def loadKBDataInDB(source, url, web_content, web_metadata):
-    # Initialize variables
-    #content_limit = 1000
-    #content_len = 0
+
     content_metadata = web_metadata
-    # using web scrapping need ot extract key value pair data form web page and store it in content variable
     content = web_content
-    embeddings = ai.generateEmbeddings(content, "text-embedding-ada-002")
-    '''
-    content_len = len(web_content)
-    content_splits, content_rem = divmod(content_len, content_limit)
-    if content_rem != 0:
-        content_splits = content_splits + 1
-        for split in range(content_splits):
-            content = web_content[split * content_limit : (split + 1) * content_limit]                 
-            content_parts = str(split+1) + "/" + str(content_splits)
-    '''
-    
+
     # Initialize DB Connection
-    conn = sq.getconnection()  
-    content_parts = "1/1"
-    data = (source, url, content, content_metadata, content_parts)
-    # Insert records in Database table            
-    sq.create_records(conn, data)    
-    #print ("Parts: " + str(content_splits))
+    conn = sq.getconnection() 
+    # Code to slpit the contents in chunk  
+    chunks = csplit.contentspiltter(content)
+    for i, chunk in enumerate(chunks):
+        content_parts = str(i+1)+ "/" + str(len(chunks))
+        content_metadata = content_metadata
+        content = chunk.page_content
+        embeddings = ai.generateEmbeddings(content, "text-embedding-ada-002")
+        print(embeddings)
+        data = (source, url, content, content_metadata, content_parts)             
+        # Insert records in Database table            
+        sq.create_records(conn, data)
+    
     # Close DB Connection
     conn.close()
 #-----------------------------------------------------------------    

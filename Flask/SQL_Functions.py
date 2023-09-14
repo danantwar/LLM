@@ -6,10 +6,10 @@ def getconnection():
     try:
         connection = psycopg2.connect(
             user="postgres",
-            password="Aryan@1986",
+            password="postgres",
             host="localhost",
-            port="5432",
-            database="TestDB"
+            port="5435",
+            database="postgres"
         )
         
         return connection
@@ -21,7 +21,7 @@ def getconnection():
 def create_records(connection, data):
     try:
         cursor = connection.cursor()
-        insert_query = "INSERT INTO public.\"LLM\" (source, reference, content, content_metadata, content_parts) VALUES (%s, %s, %s, %s, %s)"
+        insert_query = "INSERT INTO public.\"LLM\" (source, reference, content, content_metadata, content_parts, embedding) VALUES (%s, %s, %s, %s, %s, %s)"
         cursor.execute(insert_query, data)
         connection.commit()
        #print("Record inserted successfully")        

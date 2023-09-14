@@ -3,6 +3,11 @@ import datetime
 from Auth import GetAuthToken as Auth
 import openAIFunctions as ai
 import SQL_Functions as sq
+import contentSplitter as csplit
+import generateEmbeding as ge
+from sentence_transformers import SentenceTransformer
+from sentence_transformers.util import cos_sim
+model = SentenceTransformer('BAAI/bge-small-en')
 
 def loadHelixRecords(form, url, load_type):
     # Initialize Variables
@@ -81,9 +86,7 @@ def getLastLoadTimestamp():
     return load_timestamp
 #-----------------------------------------------------------------
 def loadDataInDB(source, json_response, form):
-    # Initialize variables
-    content_limit = 1000
-    content_len = 0   
+
     # Initialize DB Connection
     conn = sq.getconnection()  
     for entry in json_response['entries']:
@@ -104,28 +107,41 @@ def loadDataInDB(source, json_response, form):
             reference = values['DocID']
 
 
-        for key, value in values.items():            
-            record_data += str(value)
+        for key, value in values.items():
+            if key not in {"Incident Number", "Infrastructure Change ID", "Work Order ID", "Problem Investigation ID", "Known Error ID", "DocID"}:
+                record_data += str(value) +"\n"
             record_metadata += f"{key}: {value},\n"
+                      
+        # Code to slpit the contents in chunk  
+        # chunks = csplit.contentspiltter(record_data)      
+        # for i, chunk in enumerate(chunks):
+        #     content_parts = str(i+1)+ "/" + str(len(chunks))
+        #     content_metadata = record_metadata
+        #     content = chunk.page_content
+        #     embedding = ge.generateEmbedding(content)
+        #     embedding_list = embedding.tolist()
+        #     #embeddings = ai.generateEmbeddings(content, "text-embedding-ada-002")
+        #     #data = (source, filename, content, content_metadata, content_parts)
+        #     data = (source, reference, content, content_metadata, content_parts, embedding_list[0])               
+        #     # Insert records in Database table            
+        #     sq.create_records(conn, data)
             
-           
-
-        # Code to slpit the contents in chunk
-        content_len = len(record_data)
-        content_splits, content_rem = divmod(content_len, content_limit)
-        if content_rem != 0:
-            content_splits = content_splits + 1
+        # Code to slpit the contents based on Token limit          
+        chunks = ge.generatetokens(record_data)
         
-        for split in range(content_splits):
-            content = record_data[split * content_limit : (split + 1) * content_limit]
-            embeddings = ai.generateEmbeddings(content, "text-embedding-ada-002")
-            content_parts = str(split+1) + "/" + str(content_splits)            
-            #content_splits = "1/1"
-            #data = (source, reference, record_data, record_metadata, content_splits)
-            data = (source, reference, content, record_metadata, content_parts)
+        for i, chunk in enumerate(chunks):
+            content_parts = str(i+1)+ "/" + str(len(chunks))
+            content_metadata = record_metadata
+            content = chunk
+            embedding = ge.generateEmbedding(content)
+            embedding_list = embedding.tolist()
+            print("Embeddign list for tken is :", embedding_list)
+            #embeddings = ai.generateEmbeddings(content, "text-embedding-ada-002")
+            #data = (source, filename, content, content_metadata, content_parts)
+            data = (source, reference, content, content_metadata, content_parts, embedding_list[0])               
             # Insert records in Database table            
-            sq.create_records(conn, data)    
-    
+            sq.create_records(conn, data)   
+
     # Close DB Connection
     conn.close()
 #-----------------------------------------------------------------    
