@@ -5,9 +5,6 @@ import openAIFunctions as ai
 import SQL_Functions as sq
 import contentSplitter as csplit
 import generateEmbeding as ge
-from sentence_transformers import SentenceTransformer
-from sentence_transformers.util import cos_sim
-model = SentenceTransformer('BAAI/bge-small-en')
 
 def loadHelixRecords(form, url, load_type):
     # Initialize Variables
