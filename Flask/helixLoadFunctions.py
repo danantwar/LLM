@@ -109,7 +109,7 @@ def loadDataInDB(source, json_response, form):
                 record_data += str(value) +"\n"
             record_metadata += f"{key}: {value},\n"
                       
-        # Code to slpit the contents in chunk  
+        # Code to slpit the contents in chunk s 
         # chunks = csplit.contentspiltter(record_data)      
         # for i, chunk in enumerate(chunks):
         #     content_parts = str(i+1)+ "/" + str(len(chunks))
