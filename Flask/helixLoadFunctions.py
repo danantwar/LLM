@@ -132,7 +132,6 @@ def loadDataInDB(source, json_response, form):
             content = chunk
             embedding = ge.generateEmbedding(content)
             embedding_list = embedding.tolist()
-            print("Embeddign list for tken is :", embedding_list)
             #embeddings = ai.generateEmbeddings(content, "text-embedding-ada-002")
             #data = (source, filename, content, content_metadata, content_parts)
             data = (source, reference, content, content_metadata, content_parts, embedding_list[0])               

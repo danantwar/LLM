@@ -11,7 +11,7 @@ def generatetokens(content):
     #print("content is :", content)
     tokens =model.tokenizer.convert_ids_to_tokens(model.tokenize([content]).get('input_ids').flatten().tolist())
     numberoftokens=len(tokens)
-    print("aLL tOKEN:", tokens)
+    # print("aLL tOKEN:", tokens)
     tokens =tokens[1:numberoftokens-1]
     
     # Define the token limit
@@ -25,12 +25,18 @@ def generatetokens(content):
     end_idx = token_limit
     
     # Iterate through the tokens
-    for token in tokens:
+    for token in tokens:     
+        if current_chunk ==[] and token.startswith ('##'):
+            #print("curent token is", tokens[start_idx])
+           # print("previous token is", tokens[start_idx-1])
+           # print("Old value of token is", tokens[start_idx] )
+            #print("OLD token", token)
+            tokens[start_idx] = tokens[start_idx-1] + tokens[start_idx]
+            tokens[start_idx] = tokens[start_idx].replace("#", "")
+            token=tokens[start_idx]
+            #print("new token", token)
+           # print("new value of token is", tokens[start_idx+1] )
         current_chunk.append(token)
-        # if current_substring ==[] and token.startswith ('##'):
-        #     print("curent token is", tokens[start_idx+1])
-        #     print("previous token is", tokens[start_idx])
-        #     tokens[start_idx+1] = tokens[start_idx] + tokens[start_idx+1]
         # If the current chunk exceeds the token limit, start a new chunk
         if len(current_chunk) >= token_limit:
             chunks.append(" ".join(current_chunk))
@@ -48,17 +54,18 @@ def generatetokens(content):
         substring_tokens = tokens[start_idx:numberoftokens-1]
         current_substring.append(model.tokenizer.convert_tokens_to_string(substring_tokens))     
         substrings.append(" ".join(current_substring)) 
-        
+        #print(type(substrings))
+        # print("Corrected Tokens", tokens)
     return substrings
 
-input_string = """VPN-NA - Application-Server onprem-vpn liogn issue ...
-BMC Helix Intelligent Automation Initiated Incident VPN-NA - Application-Server onprem-vpn login issue ...BMC Helix Intelligent Automation Initiated Incident VPN-NA - Application-Server onprem-vpn login issue ...BMC Helix Intelligent Automation Initiated Incident VPN-NA - Application-Server onprem-vpn login issue ...BMC Helix Intelligent Automation Initiated Incident VPN-NA - Application-Server onprem-vpn login issue ...BMC Helix Intelligent Automation Initiated Incident VPN-NA - Application-Server onprem-vpn login issue ...,
-None"""
+# input_string = """VPN-NA - Application-Server onprem-vpn login issue ...
+# BMC Helix Intelligent Automation Initiated Incident VPN-NA - Application-Server onprem-vpn login issue ...BMC Helix Intelligent Automation Initiated Incident VPN-NA - Application-Server onprem-vpn login issue ...BMC Helix Intelligent Automation Initiated Incident VPN-NA - Application-Server onprem-vpn login issue ...BMC Helix Intelligent Automation Initiated Incident VPN-NA - Application-Server onprem-vpn login issue ...BMC Helix Intelligent Automation Initiated Incident VPN-NA - Application-Server onprem-vpn login issue ...
+# None"""
 
-substrings=generatetokens(input_string)
+# substrings=generatetokens(input_string)
 #print(substrings)
-for i, substring in enumerate(substrings):
-     print(f"Substring {i + 1}:", substring)
+# for i, substring in enumerate(substrings):
+#      print(f"Substring {i + 1}:", substring)
     # query_embeds = model.encode(substring)
      #query_embeds = model.encode(chunks)
      #print("Shape of encoded chunks:", query_embeds.shape)

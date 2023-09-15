@@ -8,21 +8,21 @@ def initiateHelixLoad(LoadType):
 #    load_type = LoadType
     # Get details of Helix forms and URLs
     HelixDetails = {
-        "Incident" : config.GetIncDataUrl
-        # "IncidentWorkLog" : config.GetIncWorkLogsUrl,
-        # "Change" : config.GetCrqUrl,
-        # "ChangeWorkLog" : config.GetCrqWLUrl,
-        # "WorkOrder" : config.GetWoUrl,
-        # "WorkOrderWorkLog" : config.GetWoWLUrl,
-        # "Problem" : config.GetPbmUrl,
-        # "ProblemWorkLog" : config.GetPbmWLUrl,
-        # "KnownError" : config.GetPbmKEUrl,
-        # "KnownErrorWorkLog" : config.GetPbmKEWLUrl,
-        # "KnowledgeHowTo" : config.GetRkmHowToUrl,
-        # "KnowledgeKcs" : config.GetRkmKcsUrl,
-        # "KnowledgeKe" : config.GetRkmKEUrl,
-        # "KnowledgePbm" : config.GetRkmPbmUrl,
-        # "KnowledgeRef" : config.GetRkmRefUrl,
+        "Incident" : config.GetIncDataUrl,
+        "IncidentWorkLog" : config.GetIncWorkLogsUrl,
+        "Change" : config.GetCrqUrl,
+        "ChangeWorkLog" : config.GetCrqWLUrl,
+        "WorkOrder" : config.GetWoUrl,
+        "WorkOrderWorkLog" : config.GetWoWLUrl,
+        "Problem" : config.GetPbmUrl,
+        "ProblemWorkLog" : config.GetPbmWLUrl,
+        "KnownError" : config.GetPbmKEUrl,
+        "KnownErrorWorkLog" : config.GetPbmKEWLUrl,
+        "KnowledgeHowTo" : config.GetRkmHowToUrl,
+        "KnowledgeKcs" : config.GetRkmKcsUrl,
+        "KnowledgeKe" : config.GetRkmKEUrl,
+        "KnowledgePbm" : config.GetRkmPbmUrl,
+        "KnowledgeRef" : config.GetRkmRefUrl,
     }
     
     for form in HelixDetails:

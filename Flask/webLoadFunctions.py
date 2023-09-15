@@ -5,6 +5,7 @@ import openAIFunctions as ai
 import datetime
 import SQL_Functions as sq
 import contentSplitter as csplit
+import generateEmbeding as ge
 
 
 #-----------------------------------------------------------------
@@ -64,17 +65,30 @@ def loadDataInDB(source, url, web_content):
     
     # Initialize DB Connection
     conn = sq.getconnection() 
-    # Code to slpit the contents in chunk  
-    chunks = csplit.contentspiltter(content)
+    
+    # Code to slpit the contents based on Token limit   
+    chunks = ge.generatetokens(content)
     for i, chunk in enumerate(chunks):
         content_parts = str(i+1)+ "/" + str(len(chunks))
         content_metadata = content_metadata
-        content = chunk.page_content
-        #embeddings = ai.generateEmbeddings(content, "text-embedding-ada-002")
-        #print(embeddings)
-        data = (source, url, content, content_metadata, content_parts)             
+        content = chunk
+        embedding = ge.generateEmbedding(content)
+        embedding_list = embedding.tolist()
+        data = (source, url, content, content_metadata, content_parts, embedding_list[0])             
         # Insert records in Database table            
-        sq.create_records(conn, data)   
+        sq.create_records(conn, data) 
+    
+    # # Code to slpit the contents in chunk  
+    # chunks = csplit.contentspiltter(content)
+    # for i, chunk in enumerate(chunks):
+    #     content_parts = str(i+1)+ "/" + str(len(chunks))
+    #     content_metadata = content_metadata
+    #     content = chunk.page_content
+    #     #embeddings = ai.generateEmbeddings(content, "text-embedding-ada-002")
+    #     #print(embeddings)
+    #     data = (source, url, content, content_metadata, content_parts)             
+    #     # Insert records in Database table            
+    #     sq.create_records(conn, data)   
 
     # Close DB Connection
     conn.close()
@@ -87,17 +101,29 @@ def loadKBDataInDB(source, url, web_content, web_metadata):
 
     # Initialize DB Connection
     conn = sq.getconnection() 
-    # Code to slpit the contents in chunk  
-    chunks = csplit.contentspiltter(content)
+    # Code to slpit the contents based on Token limit   
+    chunks = ge.generatetokens(content)
     for i, chunk in enumerate(chunks):
         content_parts = str(i+1)+ "/" + str(len(chunks))
         content_metadata = content_metadata
-        content = chunk.page_content
-        embeddings = ai.generateEmbeddings(content, "text-embedding-ada-002")
-        print(embeddings)
-        data = (source, url, content, content_metadata, content_parts)             
+        content = chunk
+        embedding = ge.generateEmbedding(content)
+        embedding_list = embedding.tolist()
+        data = (source, url, content, content_metadata, content_parts, embedding_list[0])             
         # Insert records in Database table            
         sq.create_records(conn, data)
+        
+    # # Code to slpit the contents in chunk  
+    # chunks = csplit.contentspiltter(content)
+    # for i, chunk in enumerate(chunks):
+    #     content_parts = str(i+1)+ "/" + str(len(chunks))
+    #     content_metadata = content_metadata
+    #     content = chunk.page_content
+    #     #embeddings = ai.generateEmbeddings(content, "text-embedding-ada-002")
+    #     #print(embeddings)
+    #     data = (source, url, content, content_metadata, content_parts)             
+    #     # Insert records in Database table            
+    #     sq.create_records(conn, data)
     
     # Close DB Connection
     conn.close()

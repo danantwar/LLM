@@ -22,11 +22,11 @@ KM_PbmUrl = 'RKM:ProblemSolutionTemplate_Manageable_Join'
 KM_RefUrl = 'RKM:ReferenceTemplate_Manageable_Join'
 
 # Incident Query Parameters
-IncQueryQual = "?q='Incident Number'=\"INC000000024548\""
+#IncQueryQual = "?q='Incident Number'=\"INC000000024548\""
 #IncidentFieldList = "?fields=values(Incident Number, Description, Detailed Decription,Resolution, Categorization Tier 1, Categorization Tier 2, Categorization Tier 3, Product Categorization Tier 1, Product Categorization Tier 2, Product Categorization Tier 3, Resolution Category, Resolution Category Tier 2, Resolution Category Tier 3, Closure Product Category Tier1, Closure Product Category Tier2, Closure Product Category Tier3, Generic Categorization Tier 1, Generic Categorization Tier 2, Generic Categorization Tier 3)"
-IncidentFieldList = "&fields=values(Incident Number, Description, Detailed Decription, Resolution)"
-GetIncDataUrl= BaseUrl + INC_Url + IncQueryQual + IncidentFieldList
-#GetIncDataUrl= BaseUrl+INC_Url+IncidentFieldList
+IncidentFieldList = "?fields=values(Incident Number, Description, Detailed Decription, Resolution)"
+#GetIncDataUrl= BaseUrl + INC_Url + IncQueryQual + IncidentFieldList
+GetIncDataUrl= BaseUrl+INC_Url+IncidentFieldList
 
 # Incident WorkLog Query Parameters
 #IncWOQueryQual = "?q=('Incident Number' = \"INC000000024397\")"
