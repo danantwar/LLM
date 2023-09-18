@@ -3,6 +3,7 @@ from flask import Flask, render_template, request
 import helixLoad as helix
 import webLoad as web
 import fileLoad as file
+import asyncio
 
 app = Flask(__name__)
 
@@ -41,16 +42,16 @@ def loadData():
     
 
 @app.route('/', methods=['GET', 'POST'])
-
 def index():
     if request.method == 'POST':
-        Source = request.form['Source']
-        LoadType = request.form['LoadType']
-        
+        Source = request.form['LoadSource']
+        LoadType = request.form['HelixLoadType']
+        print(Source)
+        print(LoadType)
         if Source =="HELIX" and LoadType !="" :
             helix.initiateHelixLoad(LoadType)
             userMsg = f"Hello, {Source} data load into AI Model is Completed now!"
-            return render_template('index.html', greeting=userMsg)
+            return render_template('index.html', response=userMsg)
         
         if Source =="FILE":
             print("I am on file")

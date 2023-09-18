@@ -8,12 +8,11 @@ import generateEmbeding as ge
 
 def loadHelixRecords(form, url, load_type):
     # Initialize Variables
-    source = "HELIX"
     offset  = 0
     limit = 1000  
     recordsExist = False
     getrecords = True
-    timestamp = createLoadHistoryInDB(source)
+    
     print(load_type)
     if load_type == "DELTA":
         timestamp = getLastLoadTimestamp()        

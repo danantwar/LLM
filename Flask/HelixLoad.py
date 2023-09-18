@@ -25,6 +25,8 @@ def initiateHelixLoad(LoadType):
         "KnowledgeRef" : config.GetRkmRefUrl,
     }
     
+    source = "HELIX"
+    timestamp = helix.createLoadHistoryInDB(source)
     for form in HelixDetails:
         url = HelixDetails[form]   
         # print("Calling Process_records function")
