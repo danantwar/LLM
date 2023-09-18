@@ -1,4 +1,5 @@
 import requests
+import json
 import datetime
 from Auth import GetAuthToken as Auth
 import openAIFunctions as ai
@@ -6,34 +7,36 @@ import SQL_Functions as sq
 import contentSplitter as csplit
 import generateEmbeding as ge
 
-def loadHelixRecords(form, url, load_type):
+def loadHelixRecords(source, form, url, lastLoadTimestamp, load_type):
     # Initialize Variables
     offset  = 0
     limit = 1000  
     recordsExist = False
+    recordCount = 0
     getrecords = True
     
-    print(load_type)
-    if load_type == "DELTA":
-        timestamp = getLastLoadTimestamp()        
     while getrecords:     
-        response_data = getRecords(url, offset, limit, timestamp, load_type)
-        entries_count = len(response_data["entries"])
+        response_data = getRecords(url, offset, limit, lastLoadTimestamp, load_type)
+        recordsExist = len(response_data["entries"]) > 0
         
-        if entries_count != 0:
+        # This section is for debugging, comment this if..else later
+        if recordsExist:
             getrecords = True    
-            recordsExist = True
             offset = offset + limit             
-            print("\nRecord Exist Flag : " + str(recordsExist) + "\n")    
+            print("\nRecords found: " + form + "\n")    
         else:
-            recordsExist = False
             getrecords = False
-            print("\nRecord Exist Flag : " + str(recordsExist) + "\n")    
+            print("\nRecords not found: " + form + "\n")    
             break            
         
+        # This is important and it calls the function to load data into Database
         if recordsExist:                 
             loadDataInDB(source, response_data, form)                    
+    
+    #print("Records Processed: ", recordCount)
+    
 #-----------------------------------------------------------------
+
 def getRecords(url, offset, limit, load_timestamp, load_type):
       # print("Inside getRecords function")   
         authToken = Auth()
@@ -44,43 +47,62 @@ def getRecords(url, offset, limit, load_timestamp, load_type):
         elif load_type == "DELTA" and "RKM:" in url :
             url = url + "&offset=" + str(offset) + "&limit=" + str(limit) + "&q='Modified Date' > " + "\"" + load_timestamp + "\""
         
-        print ("URL : " + url)
-        
+        # print ("URL : " + url)        
         # Prepare HTTP Headers for Helix Call
         HttpHeaders = {
                 'Authorization': authToken
             }
         HttpResponse = requests.get(url, headers=HttpHeaders)
-        response = HttpResponse.json()
+        response_data = HttpResponse.json()
         
-        return response
+        return response_data
+    
 #-----------------------------------------------------------------
+
 def createLoadHistoryInDB(source):
     current_datetime = datetime.datetime.now(datetime.timezone.utc)
-    load_timestamp = current_datetime.strftime('%m/%d/%Y %H:%M:%S %p')
+    loadTimestamp = current_datetime.strftime('%m/%d/%Y %H:%M:%S %p')
+    loadStatus = "Running"
     conn = sq.getconnection() 
-    data = (source, load_timestamp)                
-    # Insert records in Database table            
+    data = (source, loadTimestamp, loadStatus)
+    # Insert records in Database table
     sq.create_loadhistory(conn, data)
     conn.close()
-    return load_timestamp
+    return loadTimestamp, loadStatus
+
 #-----------------------------------------------------------------
-def getLastLoadTimestamp():
+
+def updateLoadHistory(loadStatus, source, loadTimestamp):
+    conn = sq.getconnection() 
+    data = (loadStatus, source, loadTimestamp)
+    # Insert records in Database table
+    sq.update_loadHistory(conn, data)
+    conn.close()
+        
+#-----------------------------------------------------------------
+
+def getLastLoadTimestamp(source):
     conn = sq.getconnection()
-    query = "SELECT load_timestamp FROM public.\"LoadHistory\" LIMIT 1"
+    query = "SELECT load_timestamp, load_status FROM public.\"LoadHistory\" WHERE source = '" + source + "' ORDER BY load_timestamp DESC LIMIT 1 "
+    lastLoadTimestamp = ""
+    loadStatus = ""
 
     try:
         cursor = conn.cursor()        
         cursor.execute(query)
         records = cursor.fetchall()
         for record in records:
-           load_timestamp = record[0]
+            lastLoadTimestamp = record[0]
+            loadStatus=record[1]
+            print("Load History Record: ", record)
     except (Exception) as error:
         print("Error while reading records:", error)
     
     conn.close()
-    return load_timestamp
+    return lastLoadTimestamp, loadStatus
+
 #-----------------------------------------------------------------
+
 def loadDataInDB(source, json_response, form):
 
     # Initialize DB Connection

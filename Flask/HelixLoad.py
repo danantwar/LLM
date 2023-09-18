@@ -1,11 +1,32 @@
 # app.py
+import asyncio
 import configs as config
-import helixLoadFunctions as helix
+import helixLoadFunctions as helix         
             
 #load_type = "FULL"
 #load_type = "DELTA"
-def initiateHelixLoad(LoadType):
-#    load_type = LoadType
+def initiateHelixLoad(LoadType):    
+    source = "HELIX"    
+    loadHistoryResults = helix.getLastLoadTimestamp(source)     
+    lastLoadTimestamp = loadHistoryResults[0]
+    loadStatus=loadHistoryResults[1]
+    print("Last Load Status: ", loadStatus)
+    if (loadStatus == "Completed" or loadStatus == ""):
+        initiateLoad = True
+    else:
+        initiateLoad = False
+        
+    if initiateLoad:
+        result = asyncio.run(helixLoad(initiateLoad, source, LoadType))
+        response = f"DataLoad Initiated for {source}, check logs for more details."
+    else:
+        response = f"Previous DataLoad for {source} has not completed yet, wait for previous load completion."
+    print(response)    
+    return response
+
+#-------------------------------------------------------------------#
+
+async def helixLoad(initiateLoad, source, LoadType):
     # Get details of Helix forms and URLs
     HelixDetails = {
         "Incident" : config.GetIncDataUrl,
@@ -24,12 +45,15 @@ def initiateHelixLoad(LoadType):
         "KnowledgePbm" : config.GetRkmPbmUrl,
         "KnowledgeRef" : config.GetRkmRefUrl,
     }
-    
-    source = "HELIX"
-    timestamp = helix.createLoadHistoryInDB(source)
-    for form in HelixDetails:
-        url = HelixDetails[form]   
-        # print("Calling Process_records function")
-        helix.loadHelixRecords(form, url, LoadType)
-        # print("Records Loaded" + str(records_count))
 
+    if initiateLoad:    
+        loadHistoryResults = helix.createLoadHistoryInDB(source)
+        loadTimestamp = loadHistoryResults[0]
+        loadStatus=loadHistoryResults[1]
+        for form in HelixDetails:
+            url = HelixDetails[form]   
+            helix.loadHelixRecords(source, form, url, loadTimestamp, LoadType)
+        
+        if loadStatus == "Running":
+            loadStatus = "Completed"
+            helix.updateLoadHistory(loadStatus, source, loadTimestamp)

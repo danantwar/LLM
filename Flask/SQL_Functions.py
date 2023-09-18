@@ -11,7 +11,6 @@ def getconnection():
             port="5435",
             database="postgres"
         )
-        
         return connection
     except (Exception, Error) as error:
         print("Error while connecting to PostgreSQL:", error)
@@ -28,13 +27,25 @@ def create_records(connection, data):
     except (Exception, Error) as error:
         print("Error while inserting a record:", error)
 
+# Create new record in LoadHistory Table
 def create_loadhistory(connection, data):
     try:
         cursor = connection.cursor()
-        insert_query = "INSERT INTO public.\"LoadHistory\" (source, load_timestamp) VALUES (%s, %s)"
+        insert_query = "INSERT INTO public.\"LoadHistory\" (source, load_timestamp, load_status) VALUES (%s, %s, %s)"
         cursor.execute(insert_query, data)
         connection.commit()
         print("Load History Record Create Successfully")        
+    except (Exception, Error) as error:
+        print("Error while inserting a record:", error)
+
+# Update record in LoadHistory Table
+def update_loadHistory(connection, data):
+    try:
+        cursor = connection.cursor()
+        update_query = "update public.\"LoadHistory\" SET load_status = %s WHERE source = %s and load_timestamp = %s"    
+        cursor.execute(update_query, data)
+        connection.commit()
+        print("Load History Record Updated Successfully")        
     except (Exception, Error) as error:
         print("Error while inserting a record:", error)
 
@@ -73,5 +84,5 @@ def delete_record(connection, id):
         print("Error while deleting a record:", error)
 
 con = getconnection()
-if con != 0:
- print("DB Connection is Established")
+# if con != 0:
+# print("DB Connection is Established")

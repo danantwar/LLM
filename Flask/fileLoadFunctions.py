@@ -23,7 +23,7 @@ def loadDataInDB(source, filename, file_content):
     chunks = ge.generatetokens(file_content)
     for i, chunk in enumerate(chunks):
         content_parts = str(i+1)+ "/" + str(len(chunks))
-        content_metadata = chunk.page_content
+        content_metadata = chunk
         content = chunk
         embedding = ge.generateEmbedding(content)
         embedding_list = embedding.tolist()

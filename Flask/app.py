@@ -3,7 +3,6 @@ from flask import Flask, render_template, request
 import helixLoad as helix
 import webLoad as web
 import fileLoad as file
-import asyncio
 
 app = Flask(__name__)
 
@@ -46,27 +45,25 @@ def index():
     if request.method == 'POST':
         Source = request.form['LoadSource']
         LoadType = request.form['HelixLoadType']
-        print(Source)
-        print(LoadType)
+        response = ""
+                
         if Source =="HELIX" and LoadType !="" :
-            helix.initiateHelixLoad(LoadType)
-            userMsg = f"Hello, {Source} data load into AI Model is Completed now!"
-            return render_template('index.html', response=userMsg)
+            loadResponse = helix.initiateHelixLoad(LoadType)            
+            return render_template('index.html', response=loadResponse)
         
         if Source =="FILE":
             print("I am on file")
             inputFile = request.files['Attachment']
-            file.loadFromFile(inputFile)
-            userMsg=f"Hello, {Source} data load into AI Model is Completed now!"
-            return render_template('index.html', greeting=userMsg)
+            loadResponse = file.loadFromFile(inputFile)
+            
+            return render_template('index.html', response=loadResponse)
             
         if Source == "WEB":
             WebURL = request.form['WebURL']
             print("I am on Web Page")
             print(WebURL)
-            web.loadWebData(WebURL)
-            userMsg=f"Hello, {Source} data load into AI Model is Completed now!"
-            return render_template('index.html', greeting=userMsg)
+            loadResponse = web.loadWebData(WebURL)
+            return render_template('index.html', response=loadResponse)
             
     return render_template('index.html')
 

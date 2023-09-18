@@ -1,27 +1,24 @@
 import SQL_Functions as sq
 
-def checkDataExists(url):
+def checkDataExists():
     conn = sq.getconnection()
-    query = "SELECT content FROM public.\"LLMData\" WHERE reference = '" + url + "'"
+    source = "HELIX"
+    query = "SELECT load_timestamp, load_status FROM public.\"LoadHistory\" WHERE source = '" + source + "' ORDER BY load_timestamp DESC LIMIT 1 "
     dataExists = False
-    
     print(query)
     
     try:
         cursor = conn.cursor()        
         cursor.execute(query)
         records = cursor.fetchall()
-        if records:
-            dataExists = True
-        else:
-            dataExists = False
+        for record in records:
+            lastLoadTimestamp = record[0]
+            loadStatus=record[1]
+            print("loadStatus:", loadStatus)
     except (Exception) as error:
         print("Error while reading records:", error)
     
     conn.close()
-    return dataExists
+    #print(records)
 
-
-url = "https://support.microsoft.com/en-us/topic/kb5014754-certificate-based-authent"
-exist = checkDataExists(url)
-print(exist)
+checkDataExists()
