@@ -41,7 +41,7 @@ def loadData():
             if source == "BMC KB":
                 dataFile =  request.form['KBLoad']
                 if len(dataFile) != 0:
-                    kb.loadFromFile(dataFile)
+                    file.loadFromFile(dataFile)
                 else:
                     return {"error": "Data Load File Content are manadatory for File Data Laod."}, 415    
         else:

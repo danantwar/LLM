@@ -12,10 +12,10 @@ def generatetokens(content):
     tokens =model.tokenizer.convert_ids_to_tokens(model.tokenize([content]).get('input_ids').flatten().tolist())
     numberoftokens=len(tokens)
     # print("aLL tOKEN:", tokens)
-    tokens =tokens[1:numberoftokens-1]
+    tokens = tokens[1:numberoftokens-1]
     
     # Define the token limit
-    token_limit = 150
+    token_limit = 350
     # Initialize variables to keep track of chunks and the current chunk
     chunks = []
     current_chunk = []

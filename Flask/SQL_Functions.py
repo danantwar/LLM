@@ -16,7 +16,7 @@ def getconnection():
         print("Error while connecting to PostgreSQL:", error)
         return None
 
-# Create operation
+# Create single record 
 def create_records(connection, data):
     try:
         cursor = connection.cursor()
@@ -27,6 +27,17 @@ def create_records(connection, data):
     except (Exception, Error) as error:
         print("Error while inserting a record:", error)
 
+# Create bulk records
+def createBulkRecords(connection, dataRecords):
+    try:
+        cursor = connection.cursor()
+        insert_query = "INSERT INTO public.\"LLM\" (source, reference, content, content_metadata, content_parts, embedding) VALUES (%s, %s, %s, %s, %s, %s)"
+        cursor.executemany(insert_query, dataRecords)
+        connection.commit()
+       #print("Record inserted successfully")        
+    except (Exception, Error) as error:
+        print("Error while inserting a record:", error)
+        
 # Create new record in LoadHistory Table
 def create_loadhistory(connection, data):
     try:
@@ -34,7 +45,7 @@ def create_loadhistory(connection, data):
         insert_query = "INSERT INTO public.\"LoadHistory\" (source, load_timestamp, load_status) VALUES (%s, %s, %s)"
         cursor.execute(insert_query, data)
         connection.commit()
-        print("Load History Record Create Successfully")        
+        print("Load History Record Created Successfully.")        
     except (Exception, Error) as error:
         print("Error while inserting a record:", error)
 

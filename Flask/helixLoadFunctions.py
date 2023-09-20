@@ -14,7 +14,7 @@ def loadHelixRecords(source, form, url, lastLoadTimestamp, load_type):
     recordsExist = False
     recordCount = 0
     getrecords = True
-    
+    print("\nProcessing records for " + form + " form.")    
     while getrecords:     
         response_data = getRecords(url, offset, limit, lastLoadTimestamp, load_type)
         recordsExist = len(response_data["entries"]) > 0
@@ -23,10 +23,10 @@ def loadHelixRecords(source, form, url, lastLoadTimestamp, load_type):
         if recordsExist:
             getrecords = True    
             offset = offset + limit             
-            print("\nRecords found: " + form + "\n")    
+            # print("\nRecords found for " + form + " form and processing those records.")    
         else:
             getrecords = False
-            print("\nRecords not found: " + form + "\n")    
+            # print("\nNo Records found for " + form + " form and moving to next form.")    
             break            
         
         # This is important and it calls the function to load data into Database
@@ -107,6 +107,7 @@ def loadDataInDB(source, json_response, form):
 
     # Initialize DB Connection
     conn = sq.getconnection()  
+    dataRecords = []
     for entry in json_response['entries']:
         values = entry['values']
         record_data = ""
@@ -155,9 +156,15 @@ def loadDataInDB(source, json_response, form):
             embedding_list = embedding.tolist()
             #embeddings = ai.generateEmbeddings(content, "text-embedding-ada-002")
             #data = (source, filename, content, content_metadata, content_parts)
-            data = (source, reference, content, content_metadata, content_parts, embedding_list[0])               
-            # Insert records in Database table            
-            sq.create_records(conn, data)   
+            data = (source, reference, content, content_metadata, content_parts, embedding_list[0])
+            
+            # Insert 1 record in Database table         
+            #sq.createRecords(conn, data)
+            
+            # Insert bulk record in Database table
+            dataRecords.append(data)
+            
+    sq.createBulkRecords(conn, dataRecords)   
 
     # Close DB Connection
     conn.close()
