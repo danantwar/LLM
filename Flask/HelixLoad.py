@@ -1,32 +1,12 @@
 # app.py
-import asyncio
+import threading
 import configs as config
 import helixLoadFunctions as helix         
             
 #load_type = "FULL"
 #load_type = "DELTA"
-def initiateHelixLoad(LoadType):    
-    source = "HELIX"    
-    loadHistoryResults = helix.getLastLoadTimestamp(source)     
-    lastLoadTimestamp = loadHistoryResults[0]
-    loadStatus=loadHistoryResults[1]
-    print("Last Load Status: ", loadStatus)
-    if (loadStatus == "Completed" or loadStatus == ""):
-        initiateLoad = True
-    else:
-        initiateLoad = False
-        
-    if initiateLoad:
-        result = asyncio.run(helixLoad(initiateLoad, source, LoadType))
-        response = f"DataLoad Initiated for {source}, check logs for more details."
-    else:
-        response = f"Previous DataLoad for {source} has not completed yet, wait for previous load completion."
-    print(response)    
-    return response
 
-#-------------------------------------------------------------------#
-
-async def helixLoad(initiateLoad, source, LoadType):
+def helixLoad(initiateLoad, source, LoadType):
     # Get details of Helix forms and URLs
     HelixDetails = {
         "Incident" : config.GetIncDataUrl,
@@ -57,3 +37,25 @@ async def helixLoad(initiateLoad, source, LoadType):
         if loadStatus == "Running":
             loadStatus = "Completed"
             helix.updateLoadHistory(loadStatus, source, loadTimestamp)
+
+#-------------------------------------------------------------------#
+
+def initiateHelixLoad(LoadType):    
+    source = "HELIX"    
+    loadHistoryResults = helix.getLastLoadTimestamp(source)     
+    lastLoadTimestamp = loadHistoryResults[0]
+    loadStatus=loadHistoryResults[1]
+    print("Last Load Status: ", loadStatus)
+    if (loadStatus == "Completed" or loadStatus == ""):
+        initiateLoad = True
+    else:
+        initiateLoad = False
+        
+    if initiateLoad:
+        my_thread = threading.Thread(target=helixLoad(initiateLoad, source, LoadType))
+        my_thread.start()
+        response = f"DataLoad Initiated for {source}, check logs for more details."
+    else:
+        response = f"Previous DataLoad for {source} has not completed yet, wait for previous load completion."
+    print(response)    
+    return response

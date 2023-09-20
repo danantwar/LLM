@@ -13,30 +13,40 @@ def loadData():
         payload = request.get_json()
         source = payload["source"]  
         
-        if source == "HELIX":            
-            loadType = payload["loadType"]
-            if loadType == "FULL" or loadType == "DELTA":
-                helix.initiateHelixLoad(loadType)
-            else:
-                return {"error": "LoadType value is not correct for Helix Data Laod."}, 415                 
-                
-        if source == "WEB":
-            url =  payload["url"]
-            if url.startswith("http://") or url.startswith("https://"):
-                web.loadWebData(url)                
-            else:
-                return {"error": "URL value is manadatory for Web Data Load."}, 415 
-                
-
+        if source == "HELIX" or source == "WEB":
+            if source == "HELIX":            
+                loadType = payload["loadType"]
+                if loadType == "FULL" or loadType == "DELTA":
+                    helix.initiateHelixLoad(loadType)
+                else:
+                    return {"error": "LoadType value is not correct for Helix Data Laod."}, 415
+                    
+            if source == "WEB":
+                url =  payload["url"]
+                if url.startswith("http://") or url.startswith("https://"):
+                    web.loadWebData(url)                
+                else:
+                    return {"error": "URL value is manadatory for Web Data Load."}, 415
+        else:
+            return {"error": "Source value is not valid, kindly provide correct source value."}, 415
     elif request.form:
         source = request.form['source']
-        if source == "FILE":
-            dataFile =  request.form['file']
-            if len(dataFile) != 0:
-                file.loadFromFile(dataFile)
-            else:
-                return {"error": "Data Load File Content are manadatory for File Data Laod."}, 415 
-                                
+        if source == "FILE" or source == "BMC KB":
+            if source == "FILE":
+                dataFile =  request.form['FileUpload']
+                if len(dataFile) != 0:
+                    file.loadFromFile(dataFile)
+                else:
+                    return {"error": "Data Load File Content are manadatory for File Data Laod."}, 415
+            if source == "BMC KB":
+                dataFile =  request.form['KBLoad']
+                if len(dataFile) != 0:
+                    kb.loadFromFile(dataFile)
+                else:
+                    return {"error": "Data Load File Content are manadatory for File Data Laod."}, 415    
+        else:
+            return {"error": "Source value is not valid, kindly provide correct source value."}, 415
+    
     return {"response": "Data Load Request Recevied"}, 200  
     
 
