@@ -3,10 +3,38 @@ import time
 import configs as config
 import helixLoadFunctions as helix        
 import DataLoadLogging as logs
+import threading
+import SQL_Functions as sq
 
 #load_type = "FULL"
 #load_type = "DELTA"
 
+def initiateHelixLoad(LoadType):    
+    source = "HELIX"    
+    loadHistoryResults = sq.getLastLoadTimestamp(source)     
+    lastLoadTimestamp = loadHistoryResults[0]
+    loadStatus=loadHistoryResults[1]
+    print("Last Load Status: ", loadStatus)
+    if (loadStatus == "Completed" or loadStatus == ""):
+        initiateLoad = True
+    else:
+        initiateLoad = False
+        
+    if initiateLoad:
+        args = (initiateLoad, source, LoadType)
+        thread = threading.Thread(target=helix.helixLoad(args))
+        thread.start()
+        logs.writeLog(f"DataLoad Initiated for Data Source:{source}.", "INFO")
+        httpResponse = {"message" : f"DataLoad Initiated for {source}, check logs for more details."}
+        httpCode = 202
+    else:
+        httpResponse = {"error" : f"Previous DataLoad for {source} has not completed yet, wait for previous load completion."}
+        httpCode = 415
+        logs.writeLog(f"Previous DataLoad for {source} has not completed yet, wait for previous load completion.", "WARN")
+        logs.writeLog("Data Load Terminated.", "ERROR")
+    
+    return httpResponse, httpCode
+#--------------------------------------------------------------------------------------
 def helixLoad(args):
     # Get details of Helix forms and URLs
     HelixDetails = {
