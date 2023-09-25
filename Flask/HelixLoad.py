@@ -1,13 +1,13 @@
 # app.py
 import time
-import threading
 import configs as config
-import helixLoadFunctions as helix         
-            
+import helixLoadFunctions as helix        
+import DataLoadLogging as logs
+
 #load_type = "FULL"
 #load_type = "DELTA"
 
-def helixLoad(initiateLoad, source, LoadType):
+def helixLoad(args):
     # Get details of Helix forms and URLs
     HelixDetails = {
         "Incident" : config.GetIncDataUrl
@@ -27,6 +27,10 @@ def helixLoad(initiateLoad, source, LoadType):
 #         "KnowledgeRef" : config.GetRkmRefUrl,
     }
 
+    initiateLoad = args[0]
+    source = args[1]
+    LoadType = args[2]
+    
     if initiateLoad:    
         loadHistoryResults = helix.createLoadHistoryInDB(source)
         loadTimestamp = loadHistoryResults[0]
@@ -42,26 +46,6 @@ def helixLoad(initiateLoad, source, LoadType):
         end_time = time.time()
         # Calculate the execution time
         execution_time = end_time - start_time
-        print(f"Execution Time: {execution_time:.6f} seconds") 
+        logs.writeLog(f"DataLoad Finished in {execution_time:.6f} seconds.", "INFO")
+        print(f"Execution Time: {execution_time:.6f} seconds.") 
 #-------------------------------------------------------------------#
-
-def initiateHelixLoad(LoadType):    
-    source = "HELIX"    
-    loadHistoryResults = helix.getLastLoadTimestamp(source)     
-    lastLoadTimestamp = loadHistoryResults[0]
-    loadStatus=loadHistoryResults[1]
-    print("Last Load Status: ", loadStatus)
-    if (loadStatus == "Completed" or loadStatus == ""):
-        initiateLoad = True
-    else:
-        initiateLoad = False
-        
-    if initiateLoad:
-        #my_thread = threading.Thread(target=helixLoad(initiateLoad, source, LoadType))
-        #my_thread.start()
-        result = helixLoad(initiateLoad, source, LoadType)
-        response = f"DataLoad Initiated for {source}, check logs for more details."
-    else:
-        response = f"Previous DataLoad for {source} has not completed yet, wait for previous load completion."
-    #print(result)    
-    return response

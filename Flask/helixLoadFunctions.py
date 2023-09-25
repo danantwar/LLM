@@ -6,6 +6,7 @@ import openAIFunctions as ai
 import SQL_Functions as sq
 import contentSplitter as csplit
 import generateEmbeding as ge
+import DataLoadLogging as logs
 
 def loadHelixRecords(source, form, url, lastLoadTimestamp, load_type):
     # Initialize Variables
@@ -14,6 +15,7 @@ def loadHelixRecords(source, form, url, lastLoadTimestamp, load_type):
     recordsExist = False
     recordCount = 0
     getrecords = True
+    logs.writeLog(f"Data Load process started for records in " + form + " form.", "INFO")
     print("\nProcessing records for " + form + " form.")    
     while getrecords:     
         response_data = getRecords(url, offset, limit, lastLoadTimestamp, load_type)
@@ -22,18 +24,14 @@ def loadHelixRecords(source, form, url, lastLoadTimestamp, load_type):
         # This section is for debugging, comment this if..else later
         if recordsExist:
             getrecords = True    
-            offset = offset + limit             
-            # print("\nRecords found for " + form + " form and processing those records.")    
+            offset = offset + limit                         
         else:
             getrecords = False
-            # print("\nNo Records found for " + form + " form and moving to next form.")    
             break            
         
         # This is important and it calls the function to load data into Database
         if recordsExist:                 
             loadDataInDB(source, response_data, form)                    
-    
-    #print("Records Processed: ", recordCount)
     
 #-----------------------------------------------------------------
 
@@ -49,11 +47,11 @@ def getRecords(url, offset, limit, load_timestamp, load_type):
         
         # print ("URL : " + url)        
         # Prepare HTTP Headers for Helix Call
-        HttpHeaders = {
+        httpHeaders = {
                 'Authorization': authToken
             }
-        HttpResponse = requests.get(url, headers=HttpHeaders)
-        response_data = HttpResponse.json()
+        httpResponse = requests.get(url, headers=httpHeaders)
+        response_data = httpResponse.json()       
         
         return response_data
     
@@ -80,29 +78,6 @@ def updateLoadHistory(loadStatus, source, loadTimestamp):
     conn.close()
         
 #-----------------------------------------------------------------
-
-def getLastLoadTimestamp(source):
-    conn = sq.getconnection()
-    query = "SELECT load_timestamp, load_status FROM public.\"LoadHistory\" WHERE source = '" + source + "' ORDER BY load_timestamp DESC LIMIT 1 "
-    lastLoadTimestamp = ""
-    loadStatus = ""
-
-    try:
-        cursor = conn.cursor()        
-        cursor.execute(query)
-        records = cursor.fetchall()
-        for record in records:
-            lastLoadTimestamp = record[0]
-            loadStatus=record[1]
-            print("Load History Record: ", record)
-    except (Exception) as error:
-        print("Error while reading records:", error)
-    
-    conn.close()
-    return lastLoadTimestamp, loadStatus
-
-#-----------------------------------------------------------------
-
 def loadDataInDB(source, json_response, form):
 
     # Initialize DB Connection
