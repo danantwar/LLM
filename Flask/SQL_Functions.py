@@ -92,7 +92,11 @@ def getLastLoadTimestamp(source):
         for record in records:
             lastLoadTimestamp = record[0]
             loadStatus=record[1]
-            #print("Load History Record: ", record)
+            print("Load History Record: ", record)
+        if len(records) == 0:
+            print("There are no records present in database for this query.")
+        else:
+            print(f"There are {len(records)} records found in database for this query.")
     except (Exception) as error:
         logs.writeLog(f"Error while reading records: {error}", "ERROR")
         print("Error while reading records:", error)

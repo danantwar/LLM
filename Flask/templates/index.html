@@ -24,6 +24,7 @@
             border-radius: 5px;
             padding: 15px;
             width: 50%;
+            border: 3px solid #555555;
         }
         input[type="file"]{
             width: 200px;
@@ -84,8 +85,9 @@
     <div class="container">
         <h1 align="center">Data Loader</h1>
         <form id = "DataLoad" action="/" method="POST" enctype="multipart/form-data">
+            <div id="source" align="center" style="margin:auto">
             <label for="SourceLabel">Data Source:</label>
-            <select id="LoadSource" name="LoadSource" onchange="showHideField()" required>
+            <select id="LoadSource" name="LoadSource" align = "center" onchange="showHideField()" required>
                 <option value="DEFAULT">Please select an Source...</option>
                 <option value="HELIX">HELIX</option>
                 <option value="WEB">WEB</option>
@@ -93,7 +95,7 @@
                 <option value="FILE">FILE</option>
             </select>
             <br><br>
-            <div id="HelixLoad" style="display: none;">
+            <div id="HelixLoad" align="center" style="display: none;">
                 <!-- Field 1 content -->
                 <label for="HelixLoadTypeLabel">Load Type:</label>
                 <select id="HelixLoadType" name="HelixLoadType" required>
@@ -102,26 +104,31 @@
                 </select>
                 <br><br>
             </div>
-            <div id="WebLoad" style="display: none;">
+            <div id="WebLoad" align="center" style="display: none;">
                 <!-- Field 2 content -->
                 <label for="WebUrlLabel">Web URL: </label>
                 <input type="text" id="Web_URL" name="Web_URL" placeholder="https://example.com" onchange="return validateURL()" >
                 <span id="url-error" style="color: red;"></span>
                 <br><br>
             </div>
-            <div id="KBLoad" style="display: none;">
+            <div id="KBLoad" align="center" style="display: none;">
                 <!-- Field 3 content -->
                 <label for="KBLoadLabel">Provide file with BMC KB URLs: </label>
                 <input type="file" id="KBLoad" name="KBLoad" required>
                 <br><br>
             </div>
-            <div id="FileLoad" style="display: none;">
+            <div id="FileLoad" align="center" style="display: none;">
                 <!-- Field 4 content -->
                 <label for="FileUploadLabel">Provide Data File: </label>
                 <input type="file" id="FileUpload" name="FileUpload" required>
                 <br><br>
             </div>
+            <div id="submit" align="center" style="margin: auto">
             <input type="submit" align="center" value="Load" onclick="submitForm()">
+            </div>
+            <br>
+            <p> <strong style="color:red;"> <mark>{{response}}</mark></strong></p>
+            <br>
         </form>
     </div>
     <script>

@@ -1,24 +1,23 @@
-import SQL_Functions as sq
+# from flask import Flask
+# from flask_restful import Resource, Api
+# import time
+# import threading
 
-def checkDataExists():
-    conn = sq.getconnection()
-    source = "HELIX"
-    query = "SELECT load_timestamp, load_status FROM public.\"LoadHistory\" WHERE source = '" + source + "' ORDER BY load_timestamp DESC LIMIT 1 "
-    dataExists = False
-    print(query)
-    
-    try:
-        cursor = conn.cursor()        
-        cursor.execute(query)
-        records = cursor.fetchall()
-        for record in records:
-            lastLoadTimestamp = record[0]
-            loadStatus=record[1]
-            print("loadStatus:", loadStatus)
-    except (Exception) as error:
-        print("Error while reading records:", error)
-    
-    conn.close()
-    #print(records)
+# app = Flask(__name__)
+# api = Api(app)
 
-checkDataExists()
+# def task(msg):
+#     print("started task for ", msg)
+#     time.sleep(5)
+#     print("completed task for ", msg)
+
+# class HelloWorld(Resource):
+#     def post(self):
+#         msg = "REST API"
+#         threading.Thread(target=task).start()
+#         return {"message":"Main fucntion compelted"}
+    
+# api.add_resource(HelloWorld, '/load')
+
+# if __name__ == '__main__':
+#     app.run(debug=True)

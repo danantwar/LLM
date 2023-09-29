@@ -1,5 +1,5 @@
-import requests
-import json
+from flask import Flask, render_template, request, jsonify
+import validateDataLoad as val
 import datetime
 from Auth import GetAuthToken as Auth
 import openAIFunctions as ai
@@ -7,8 +7,109 @@ import SQL_Functions as sq
 import contentSplitter as csplit
 import generateEmbeding as ge
 import DataLoadLogging as logs
+import configs as config
+import time
+import threading
+import requests
 
-def loadHelixRecords(source, form, url, lastLoadTimestamp, load_type):
+def loadFromHelixFull():
+    source = "HELIX"
+    initiateLoad = val.validateLoad(source)
+    if initiateLoad:
+        logs.writeLog(f"Full Data Load Initiated for Data Source:{source}.", "INFO")      
+        threading.Thread(target=helixLoadFull).start()
+        httpResponse = "Full Data Load Initiated from source:" + source +", check logs for more details."
+    else:
+        logs.writeLog(f"Previous DataLoad from source: {source} not completed yet, wait for previous load completion.", "ERROR")
+        logs.writeLog("Data Load Terminated.", "ERROR")
+        httpResponse = "Previous DataLoad from source: " + source + " not completed yet, wait for previous load completion."
+    response = httpResponse
+    return response
+#---------------------------------------------------------------------------------------------------------------------------------------
+def loadHelixDataDelta():
+    source = "HELIX"
+    initiateLoad = val.validateLoad(source)
+    if initiateLoad:
+        logs.writeLog(f"Delta Data Load Initiated for Data Source:{source}.", "INFO")      
+        threading.Thread(target=helixLoadDelta).start()
+        httpResponse = "Delta Data Load Initiated from source:"+ source + ", check logs for more details."
+    else:
+        logs.writeLog(f"Previous DataLoad from source: {source} not completed yet, wait for previous load completion.", "ERROR")
+        logs.writeLog("Data Load Terminated.", "ERROR")
+        httpResponse = "Previous DataLoad from source: " + source + " not completed yet, wait for previous load completion."
+    response = httpResponse
+    return response
+
+def helixLoadDelta():
+    # Get details of Helix forms and URLs
+    helixDetails = config.helixDetails
+    logs.writeLog("In HelixLoad Function.", "INFO")
+    source = "HELIX"
+    LoadType = "DELTA" 
+    loadHistoryResults = createLoadHistoryInDB(source)
+    loadTimestamp = loadHistoryResults[0]
+    loadStatus=loadHistoryResults[1]
+    recordCount = 0
+    # Do something asynchronous here.
+    # await asyncio.sleep(1)
+    start_time = time.time()
+    for form in helixDetails:
+        url = helixDetails[form]
+        args = (source, form, url, loadTimestamp, LoadType)
+        recordCount+=loadHelixRecords(args)
+        #threading.Thread(target=helix.loadHelixRecords(args)).start()
+    
+    if loadStatus == "Running":
+        loadStatus = "Completed"
+        args = (loadStatus, source, loadTimestamp)
+        updateLoadHistory(args)
+    end_time = time.time()
+    # Calculate the execution time
+    execution_time = end_time - start_time
+    logs.writeLog(f"Records loaded in database: {recordCount}", "INFO")
+    logs.writeLog(f"DataLoad Finished in {execution_time:.6f} seconds.", "INFO")
+    print(f"Execution Time: {execution_time:.6f} seconds.") 
+#-------------------------------------------------------------------#
+
+def helixLoadFull():
+    # Get details of Helix forms and URLs
+    helixDetails = config.helixDetails
+    logs.writeLog("In HelixLoad Function.", "INFO")
+    source = "HELIX"
+    LoadType = "DELTA" 
+    loadHistoryResults = createLoadHistoryInDB(source)
+    loadTimestamp = loadHistoryResults[0]
+    loadStatus=loadHistoryResults[1]
+    recordCount = 0
+    # Do something asynchronous here.
+    # await asyncio.sleep(1)
+    start_time = time.time()
+    for form in helixDetails:
+        url = helixDetails[form]
+        args = (source, form, url, loadTimestamp, LoadType)
+        recordCount+=loadHelixRecords(args)
+        #threading.Thread(target=helix.loadHelixRecords(args)).start()
+    
+    if loadStatus == "Running":
+        loadStatus = "Completed"
+        args = (loadStatus, source, loadTimestamp)
+        updateLoadHistory(args)
+    end_time = time.time()
+    # Calculate the execution time
+    execution_time = end_time - start_time
+    logs.writeLog(f"Records loaded in database: {recordCount}", "INFO")
+    logs.writeLog(f"DataLoad Finished in {execution_time:.6f} seconds.", "INFO")
+    print(f"Execution Time: {execution_time:.6f} seconds.") 
+#-------------------------------------------------------------------#
+
+def loadHelixRecords(args):
+    #Extract arguments
+    source = args[0]
+    form = args[1]
+    url = args[2]
+    lastLoadTimestamp = args[3]
+    load_type = args[4]
+    
     # Initialize Variables
     offset  = 0
     limit = 1000  
@@ -17,8 +118,10 @@ def loadHelixRecords(source, form, url, lastLoadTimestamp, load_type):
     getrecords = True
     logs.writeLog(f"Data Load process started for records in " + form + " form.", "INFO")
     print("\nProcessing records for " + form + " form.")    
-    while getrecords:     
-        response_data = getRecords(url, offset, limit, lastLoadTimestamp, load_type)
+    while getrecords: 
+        query_params = (url, offset, limit, lastLoadTimestamp, load_type)
+ #       print (query_params)
+        response_data = getRecords(query_params)        
         recordsExist = len(response_data["entries"]) > 0
         
         # This section is for debugging, comment this if..else later
@@ -30,14 +133,24 @@ def loadHelixRecords(source, form, url, lastLoadTimestamp, load_type):
             break            
         
         # This is important and it calls the function to load data into Database
-        if recordsExist:                 
-            loadDataInDB(source, response_data, form)                    
+        if recordsExist:
+            args = (source, response_data, form)
+            recordCount+=loadDataInDB(args)
     
-#-----------------------------------------------------------------
+    return recordCount    
+#-----------------------------------------------------------------------------------------------
 
-def getRecords(url, offset, limit, load_timestamp, load_type):
-      # print("Inside getRecords function")   
+def getRecords(query_params):
+        #Extract arguments
+        url = query_params[0]
+        offset = query_params[1]
+        limit = query_params[2]
+        load_timestamp = query_params[3]
+        load_type = query_params[4]
+    
+#        print("Inside getRecords function", url, offset, limit, load_timestamp, load_type)   
         authToken = Auth()
+        #print(authToken)
         if load_type == "FULL":
             url = url + "&offset=" + str(offset) + "&limit=" + str(limit)
         elif load_type == "DELTA" and "RKM:" not in url :
@@ -45,7 +158,7 @@ def getRecords(url, offset, limit, load_timestamp, load_type):
         elif load_type == "DELTA" and "RKM:" in url :
             url = url + "&offset=" + str(offset) + "&limit=" + str(limit) + "&q='Modified Date' > " + "\"" + load_timestamp + "\""
         
-        # print ("URL : " + url)        
+        #print ("URL : " + url)        
         # Prepare HTTP Headers for Helix Call
         httpHeaders = {
                 'Authorization': authToken
@@ -70,7 +183,11 @@ def createLoadHistoryInDB(source):
 
 #-----------------------------------------------------------------
 
-def updateLoadHistory(loadStatus, source, loadTimestamp):
+def updateLoadHistory(args):
+    # Extract arguments
+    loadStatus = args[0]
+    source = args[1]
+    loadTimestamp = args[2]
     conn = sq.getconnection() 
     data = (loadStatus, source, loadTimestamp)
     # Insert records in Database table
@@ -78,8 +195,12 @@ def updateLoadHistory(loadStatus, source, loadTimestamp):
     conn.close()
         
 #-----------------------------------------------------------------
-def loadDataInDB(source, json_response, form):
-
+def loadDataInDB(args):
+    # Extract arguments
+    source = args[0]
+    json_response = args[1]
+    form = args[2]
+    #print("In Load DB Function", args)
     # Initialize DB Connection
     conn = sq.getconnection()  
     dataRecords = []
@@ -138,9 +259,11 @@ def loadDataInDB(source, json_response, form):
             
             # Insert bulk record in Database table
             dataRecords.append(data)
+            count = len(dataRecords)
             
     sq.createBulkRecords(conn, dataRecords)   
-
     # Close DB Connection
     conn.close()
+    
+    return count
 #-----------------------------------------------------------------    

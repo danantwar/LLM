@@ -101,3 +101,22 @@ KM_PbmFieldList = "?fields=values(DocID, Article_Keywords,RKMTemplateProblem,RKM
 GetRkmPbmUrl= BaseUrl+KM_PbmUrl+KM_PbmFieldList
 KM_RefFieldList = "?fields=values(DocID, Article_Keywords,Reference)"
 GetRkmRefUrl= BaseUrl+KM_RefUrl+KM_RefFieldList
+
+# Helix URLs mapping with respective module and forms
+helixDetails = {
+    "Incident" : GetIncDataUrl,
+    "IncidentWorkLog" : GetIncWorkLogsUrl,
+    "Change" : GetCrqUrl,
+    "ChangeWorkLog" : GetCrqWLUrl,
+    "WorkOrder" : GetWoUrl,
+    "WorkOrderWorkLog" : GetWoWLUrl,
+    "Problem" : GetPbmUrl,
+    "ProblemWorkLog" : GetPbmWLUrl,
+    "KnownError" : GetPbmKEUrl,
+    "KnownErrorWorkLog" : GetPbmKEWLUrl,
+    "KnowledgeHowTo" : GetRkmHowToUrl,
+    "KnowledgeKcs" : GetRkmKcsUrl,
+    "KnowledgeKe" : GetRkmKEUrl,
+    "KnowledgePbm" : GetRkmPbmUrl,
+    "KnowledgeRef" : GetRkmRefUrl,
+}
