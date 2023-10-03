@@ -3,6 +3,7 @@ from flask import Flask, render_template, request, jsonify
 import DataLoadLogging as logs
 import helixLoadFunctions as helix
 import threading
+import validateDataLoad as val
 
 app = Flask(__name__)
 
@@ -10,12 +11,7 @@ app = Flask(__name__)
 @app.post("/load")
 def loadData():
     httpResponse = {"error": """You must provide the type of load in URL.
-                    refer examples:
-                    /load/helix/full
-                    /load/helix/delta
-                    /load/bmckb
-                    /load/web
-                    /load/file"""
+                    refer examples: /load/helix/full  /load/helix/delta /load/bmckb  /load/web /load/file"""
                     }
     httpCode = 415
     logs.writeLog("Load URL is incorrect, kindly provide correct app context.", "ERROR")#   apiResponse = {"message": httpResponse}

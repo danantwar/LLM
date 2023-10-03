@@ -76,7 +76,7 @@ def helixLoadFull():
     helixDetails = config.helixDetails
     logs.writeLog("In HelixLoad Function.", "INFO")
     source = "HELIX"
-    LoadType = "DELTA" 
+    LoadType = "FULL" 
     loadHistoryResults = createLoadHistoryInDB(source)
     loadTimestamp = loadHistoryResults[0]
     loadStatus=loadHistoryResults[1]
