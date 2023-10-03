@@ -145,9 +145,9 @@ def main():
             
         if Source == "WEB":
             url = request.form['WebURL']
-#           loadResponse = load.dataLoadFromWeb(url)
-#            return render_template('index.html', response=loadResponse)
-            
+            loadResponse = wb.loadFromWeb(url)
+            return render_template('index.html', response=loadResponse)
+
     return render_template('index.html')
 
 if __name__ == '__main__':

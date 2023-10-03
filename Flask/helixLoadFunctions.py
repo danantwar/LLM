@@ -6,7 +6,7 @@ import openAIFunctions as ai
 import SQL_Functions as sq
 import contentSplitter as csplit
 import generateEmbeding as ge
-import dataLoadLogging as logs
+import DataLoadLogging as logs
 import validateDataLoad as val
 import configs as config
 import time

@@ -1,15 +1,27 @@
+from flask import request, jsonify
 import re
 from bs4 import BeautifulSoup
 import requests
-import openAIFunctions as ai
-import datetime
 import SQL_Functions as sq
-import contentSplitter as csplit
 import generateEmbeding as ge
 import validateDataLoad as val
-import dataLoadLogging as logs
+import DataLoadLogging as logs
 
-
+def loadFromWeb(url):
+    dataExists = checkDataExists(url)
+    if dataExists:
+        logs.writeLog(f"Data already exist in database for {url} , please try data load for any other URL.", "ERROR")
+        logs.writeLog("Data Load Terminated.", "ERROR")
+        httpResponse = f"Data already exist in database for {url} , please try data load for any other URL."
+    else:
+        logs.writeLog(f"Data Load Initiated from website URL: {url}", "INFO")      
+        wbResponse = loadWebData(url)
+        if wbResponse > 0:
+            httpResponse = f"Data Loaded from URL:{url} successfully. Total {wbResponse} records created in database."
+        else:
+            httpResponse = f"Data Load from URL:{url} has failed, please check logs for more details."
+    return httpResponse
+#--------------------------------------------------------------------------------------------------------------------------
 def checkDataExists(url):
     conn = sq.getconnection()
     query = "SELECT content FROM public.\"LLM\" WHERE reference = '" + url + "'"
