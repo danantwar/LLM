@@ -6,7 +6,8 @@ import openAIFunctions as ai
 import SQL_Functions as sq
 import contentSplitter as csplit
 import generateEmbeding as ge
-import DataLoadLogging as logs
+import dataLoadLogging as logs
+import validateDataLoad as val
 import configs as config
 import time
 import threading
@@ -46,7 +47,7 @@ def helixLoadDelta():
     logs.writeLog("In HelixLoad Function.", "INFO")
     source = "HELIX"
     LoadType = "DELTA" 
-    loadHistoryResults = createLoadHistoryInDB(source)
+    loadHistoryResults = val.createLoadHistoryInDB(source)
     loadTimestamp = loadHistoryResults[0]
     loadStatus=loadHistoryResults[1]
     recordCount = 0
@@ -62,7 +63,7 @@ def helixLoadDelta():
     if loadStatus == "Running":
         loadStatus = "Completed"
         args = (loadStatus, source, loadTimestamp)
-        updateLoadHistory(args)
+        val.updateLoadHistory(args)
     end_time = time.time()
     # Calculate the execution time
     execution_time = end_time - start_time
@@ -77,7 +78,7 @@ def helixLoadFull():
     logs.writeLog("In HelixLoad Function.", "INFO")
     source = "HELIX"
     LoadType = "FULL" 
-    loadHistoryResults = createLoadHistoryInDB(source)
+    loadHistoryResults = val.createLoadHistoryInDB(source)
     loadTimestamp = loadHistoryResults[0]
     loadStatus=loadHistoryResults[1]
     recordCount = 0
@@ -93,7 +94,7 @@ def helixLoadFull():
     if loadStatus == "Running":
         loadStatus = "Completed"
         args = (loadStatus, source, loadTimestamp)
-        updateLoadHistory(args)
+        val.updateLoadHistory(args)
     end_time = time.time()
     # Calculate the execution time
     execution_time = end_time - start_time
@@ -167,33 +168,7 @@ def getRecords(query_params):
         response_data = httpResponse.json()       
         
         return response_data
-    
-#-----------------------------------------------------------------
-
-def createLoadHistoryInDB(source):
-    current_datetime = datetime.datetime.now(datetime.timezone.utc)
-    loadTimestamp = current_datetime.strftime('%m/%d/%Y %H:%M:%S %p')
-    loadStatus = "Running"
-    conn = sq.getconnection() 
-    data = (source, loadTimestamp, loadStatus)
-    # Insert records in Database table
-    sq.create_loadhistory(conn, data)
-    conn.close()
-    return loadTimestamp, loadStatus
-
-#-----------------------------------------------------------------
-
-def updateLoadHistory(args):
-    # Extract arguments
-    loadStatus = args[0]
-    source = args[1]
-    loadTimestamp = args[2]
-    conn = sq.getconnection() 
-    data = (loadStatus, source, loadTimestamp)
-    # Insert records in Database table
-    sq.update_loadHistory(conn, data)
-    conn.close()
-        
+          
 #-----------------------------------------------------------------
 def loadDataInDB(args):
     # Extract arguments

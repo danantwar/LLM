@@ -4,6 +4,7 @@ import DataLoadLogging as logs
 import helixLoadFunctions as helix
 import threading
 import validateDataLoad as val
+import webLoadFunctions as wb
 
 app = Flask(__name__)
 
@@ -87,9 +88,22 @@ def loadFromFile():
 def loadFromWeb():
     if request.is_json:
         payload = request.get_json()   
-        url =  payload["url"]
- #       httpResponse = load.dataLoadFromWeb(url)
-        return httpResponse
+        url =  payload["WebURL"]
+        dataExists = wb.checkDataExists(url)
+        if dataExists:
+            logs.writeLog(f"Data already exist in database for {url} , please try data load for any other URL.", "ERROR")
+            logs.writeLog("Data Load Terminated.", "ERROR")
+            httpResponse = {"error" : f"Data already exist in database for {url} , please try data load for any other URL."}
+            httpCode = 415
+        else:
+            logs.writeLog(f"Data Load Initiated from website URL: {url}", "INFO")      
+            wbResponse = wb.loadWebData(url)
+            if wbResponse > 0:
+                httpResponse = {"message" : f"Data Loaded from URL:{url} successfully. Total {wbResponse} records created in database."}
+                httpCode = 202
+            else:
+                httpResponse = {"message" : f"Data Load from URL:{url} has failed, please check logs for more details."}
+                httpCode = 500    
     else:
         httpResponse = {"error": """Request json is required with a URL value for this type of data load.
                                     Example json:
@@ -98,9 +112,9 @@ def loadFromWeb():
                                     }
                         """}
         httpCode = 415
-        response = jsonify(httpResponse)
-        response.status_code = httpCode
-        return response
+    response = jsonify(httpResponse)
+    response.status_code = httpCode
+    return response
 #--------------------------------------------------------------------------------------------------------------------------
 
 @app.route('/', methods=['GET', 'POST'])
