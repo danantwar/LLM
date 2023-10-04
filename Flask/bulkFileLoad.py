@@ -6,6 +6,20 @@ import validateDataLoad as val
 import DataLoadLogging as logs
 import time
 import shutil
+import threading
+
+def startBulkLoad():
+    source = "BULKFILELOAD"
+    initiateLoad = val.validateLoad(source)
+    if initiateLoad:
+        threading.Thread(target=loadFileInBulk).start()
+        httpResponse = "Bulk File Data Load is Initiated."
+        return httpResponse
+    else:
+        logs.writeLog(f"Previous Bulk File Data Load not completed yet, wait for previous load completion.", "ERROR")
+        logs.writeLog("Data Load Terminated.", "ERROR")
+        httpResponse = "Previous Bulk File Data Load not completed yet, wait for previous load completion."
+        return httpResponse
 
 def loadFileInBulk():
     #Initialize Variables
@@ -38,19 +52,18 @@ def loadFileInBulk():
             else:
                 logs.writeLog(f"Data already exist in database for {filename} , skipping this file.", "WARN")
             shutil.move(file_path, archive_path)
-    else:
-        logs.writeLog(f"No files found in configured directory: {directory_path} for bulk data load.")
-    
-    if loadStatus == "Running":
-        loadStatus = "Completed"
-        args = (loadStatus, source, loadTimestamp)
+        if loadStatus == "Running":
+            loadStatus = "Completed"
+            args = (loadStatus, source, loadTimestamp)
         val.updateLoadHistory(args)
-    end_time = time.time()
-    # Calculate the execution time
-    execution_time = end_time - start_time
-    logs.writeLog(f"Records loaded in database: {recordCount}", "INFO")
-    logs.writeLog(f"DataLoad Finished in {execution_time:.6f} seconds.", "INFO")
-    print(f"Records loaded in database: {recordCount}")
-    print(f"DataLoad Finished in {execution_time:.6f} seconds.")
+        end_time = time.time()
+        # Calculate the execution time
+        execution_time = end_time - start_time
+        logs.writeLog(f"Records loaded in database: {recordCount}", "INFO")
+        logs.writeLog(f"DataLoad Finished in {execution_time:.6f} seconds.", "INFO")
+    else:
+        logs.writeLog(f"No files found in configured directory: {directory_path} for bulk data load.", "WARN")
+    
+
 
         

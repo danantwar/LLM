@@ -6,6 +6,7 @@ import threading
 import validateDataLoad as val
 import webLoadFunctions as wb
 import fileLoadFunctions as fileload
+import bulkFileLoad as bf
 import loadArtilcesFromFile as kbload
 import bulkFileLoad as bf
 
@@ -167,7 +168,9 @@ def main():
             dataFile = request.files['FileUpload']
             loadResponse = fileload.dataLoadFromFile(dataFile)
             return render_template('index.html', response=loadResponse)
-            
+        if Source =="BULKFILE":
+            loadResponse = bf.startBulkLoad()
+            return render_template('index.html', response=loadResponse)
         if Source == "WEB":
             url = request.form['WebURL']
             loadResponse = wb.loadFromWeb(url)
