@@ -7,6 +7,7 @@ import validateDataLoad as val
 import webLoadFunctions as wb
 import fileLoadFunctions as fileload
 import loadArtilcesFromFile as kbload
+import bulkFileLoad as bf
 
 app = Flask(__name__)
 
@@ -60,14 +61,14 @@ def loadHelixDataDelta():
     response.status_code = httpCode
     return response
 #---------------------------------------------------------------------------------------------------------------------------------------
-@app.post("/load/bmckb")
-def loadFromBMCKB():
+@app.post("/load/kb")
+def loadFromKB():
     if request.form:
-        kbFile =  request.form['KBLoad']
-        httpResponse =  kbload.dataLoadFromBMCKB(kbFile)  
+        kbFile =  request.form['KBLoad']        
+        httpResponse =  kbload.dataLoadFromKB(kbFile)  
         return httpResponse
     else:
-        httpResponse = {"error": "Text file with BMC KB URLs is required for this type of data load."}
+        httpResponse = {"error": "Text file with KB URLs is required for this type of data load."}
         httpCode = 415
         response = jsonify(httpResponse)
         response.status_code = httpCode
@@ -85,6 +86,28 @@ def loadFromFile():
         response = jsonify(httpResponse)
         response.status_code = httpCode
         return response
+
+@app.post("/load/bulkfile")
+def loadBulkFile():
+    source = "BULKFILELOAD"
+    initiateLoad = val.validateLoad(source)
+    if initiateLoad:
+        threading.Thread(target=bf.loadFileInBulk).start()
+        httpResponse = {"message": "Bulk File Data Load is Initiated"}
+        httpCode = 202
+        response = jsonify(httpResponse)
+        response.status_code = httpCode
+        return response
+    else:
+        logs.writeLog(f"Previous Bulk File Data Load not completed yet, wait for previous load completion.", "ERROR")
+        logs.writeLog("Data Load Terminated.", "ERROR")
+        httpResponse = "Previous Bulk File Data Load not completed yet, wait for previous load completion."
+        httpCode = 415
+        response = httpResponse
+        response = jsonify(httpResponse)
+        response.status_code = httpCode
+        return response
+
 
 @app.post("/load/web")
 def loadFromWeb():
@@ -135,9 +158,9 @@ def main():
 
             return render_template('index.html', response=loadResponse)
         
-        if Source =="BMC KB":
+        if Source =="KB":
             kbFile = request.files['KBLoad']
-            loadResponse = kbload.dataLoadFromBMCKB(kbFile)            
+            loadResponse = kbload.dataLoadFromKB(kbFile)            
             return render_template('index.html', response=loadResponse)
         
         if Source =="FILE":

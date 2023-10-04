@@ -1,6 +1,6 @@
 import PyPDF2
-from docx import Document
 import json
+from docx import Document
 import langchain
 from langchain.document_loaders import PyPDFLoader
 

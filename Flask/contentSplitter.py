@@ -1,7 +1,6 @@
 import langchain
 from langchain.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-import SQL_Functions as sq
 
 text_splitter = RecursiveCharacterTextSplitter(
     # Set a really small chunk size, just to show.

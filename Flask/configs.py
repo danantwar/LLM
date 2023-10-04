@@ -1,9 +1,18 @@
-# API endpoint URL
+# This file contains configuration values used in all other python files
 
+# Helix API endpoint URLs and Credentials
 BaseUrl = 'https://helixsjc814-demo-restapi.onbmc.com/api/arsys/v1/entry/'
+AuthUrl = 'https://helixsjc814-demo-restapi.onbmc.com/api/jwt/login'
 username = 'Seth'
 password = 'Password_1234'
-AuthUrl = 'https://helixsjc814-demo-restapi.onbmc.com/api/jwt/login'
+
+# Directory path used for data load using FILE
+KB_dir = 'C:\\tmp\\LLM\\KBs'
+dataFile_dir = 'C:\\tmp\\LLM\\DataFiles'
+archive_dir = 'C:\\tmp\\LLM\\Archived'
+log_file = 'logs\dataload.log'
+
+# Helix Form Names
 INC_Url = 'HPD:Help Desk'
 INC_WorkLogUrl = 'HPD:WorkLog'
 CRQ_Url = 'CHG:Infrastructure Change'
@@ -21,76 +30,57 @@ KM_KeUrl = 'RKM:KnownErrorTemplate_Manageable_Join'
 KM_PbmUrl = 'RKM:ProblemSolutionTemplate_Manageable_Join'
 KM_RefUrl = 'RKM:ReferenceTemplate_Manageable_Join'
 
-# Incident Query Parameters
-#IncQueryQual = "?q='Incident Number'=\"INC000000024548\""
-#IncidentFieldList = "?fields=values(Incident Number, Description, Detailed Decription,Resolution, Categorization Tier 1, Categorization Tier 2, Categorization Tier 3, Product Categorization Tier 1, Product Categorization Tier 2, Product Categorization Tier 3, Resolution Category, Resolution Category Tier 2, Resolution Category Tier 3, Closure Product Category Tier1, Closure Product Category Tier2, Closure Product Category Tier3, Generic Categorization Tier 1, Generic Categorization Tier 2, Generic Categorization Tier 3)"
+# Incident fields to be retrieved in Query
 IncidentFieldList = "?fields=values(Incident Number, Description, Detailed Decription, Resolution)"
-#GetIncDataUrl= BaseUrl + INC_Url + IncQueryQual + IncidentFieldList
+# Construct Url to fetch Incident Details
 GetIncDataUrl= BaseUrl+INC_Url+IncidentFieldList
 
-# Incident WorkLog Query Parameters
-#IncWOQueryQual = "?q=('Incident Number' = \"INC000000024397\")"
+# Incident WorkLog fields to be retrieved in Query
 WorkLogFieldList = '?fields=values(Incident Number, Work Log ID, Description, Detailed Description)'
-#GetIncWorkLogsUrl= BaseUrl+INC_WorkLogUrl+IncQueryQual+IncidentFieldList
+# Construct Url to fetch Incident Worklog Details
 GetIncWorkLogsUrl= BaseUrl + INC_WorkLogUrl + WorkLogFieldList
 
-# Change Query Parameters
-#CrqQueryQual = "?q='Change Infrastructure ID'=\"CRQ000000024397\""
-#CrqFieldList = "?fields=values(Infrastructure Change ID, Description, Detailed Description, Categorization Tier 1, Categorization Tier 2, Categorization Tier 3, Product Cat Tier 1, Product Cat Tier 2, Product Cat Tier 3)"
+# Change fields to be retrieved in Query
 CrqFieldList = "?fields=values(Infrastructure Change ID, Description, Detailed Description)"
-#GetCrqDataUrl= BaseUrl + INC_Url + IncQueryQual + IncidentFieldList
+# Construct Url to fetch Change Details
 GetCrqUrl= BaseUrl+CRQ_Url+CrqFieldList
 
-# Change WorkLog Query Parameters
-#CrqWLQueryQual = "?q='Change Infrastructure ID'=\"CRQ000000024397\""
+# Change WorkLog fields to be retrieved in Query
 CrqWLFieldList = "?fields=values(Infrastructure Change ID, Work Log ID, Description, Detailed Description)"
-#GetIncWorkLogsUrl= BaseUrl+INC_WorkLogUrl+IncQueryQual+IncidentFieldList
+# Construct Url to fetch Change Worklog Details
 GetCrqWLUrl= BaseUrl + CRQ_WorkLogsUrl + CrqWLFieldList
 
-# WorkOrder Query Parameters
-# WoQueryQual = "?q='Work Order ID'=\"WO0000000024397\""
-#WoFieldList = "?fields=values(Work Order ID, Summary, Detailed Description,Categorization Tier 1, Categorization Tier 2, Categorization Tier 3, Product Categorization Tier 1, Product Categorization Tier 2, Product Categorization Tier 3)"
+# WorkOrder fields to be retrieved in Query
 WoFieldList = "?fields=values(Work Order ID, Summary, Detailed Description)"
-#GetWoDataUrl= BaseUrl + WO_Url + WOQueryQual + WoFieldList
+# Construct Url to fetch Work order Details
 GetWoUrl= BaseUrl+WO_Url+WoFieldList
 
-# WorkOrder Work Logs Query Parameters
-# WoWLQueryQual = "?q='Work Order ID'=\"WO0000000024397\""
+# WorkOrder WorkLog fields to be retrieved in Query
 WoWLFieldList = "?fields=values(Work Order ID, Work Log ID, Description, Detailed Description)"
-#GetWoWLDataUrl= BaseUrl + WO_WorkLogsUrl + WOQueryQual + WoFieldList
+# Construct Url to fetch Work order Worklog Details
 GetWoWLUrl= BaseUrl+WO_WorkLogsUrl+WoWLFieldList
 
-# Problem Query Parameters
-# PbmQueryQual = "?q='Problem Investigation ID'=\"PBM000000024397\""
-#PbmFieldList = "?fields=values(Problem Investigation ID, Description, Detailed Decription, Temporary Workaround, Implemented Solution, Categorization Tier 1, Categorization Tier 2, Categorization Tier 3, Product Categorization Tier 1, Product Categorization Tier 2, Product Categorization Tier 3)"
+# Problem fields to be retrieved in Query
 PbmFieldList = "?fields=values(Problem Investigation ID, Description, Detailed Decription, Temporary Workaround, Implemented Solution)"
-#GetWoDataUrl= BaseUrl + PBM_Url + PbmQueryQual + WoFieldList
+# Construct Url to fetch Problem Details
 GetPbmUrl= BaseUrl+PBM_Url+PbmFieldList
 
-# Problem WorkLog Query Parameters
-# PbmWLQueryQual = "?q='Problem Investigation ID'=\"PBM000000024397\""
+# Problem WorkLog fields to be retrieved in Query
 PbmWLFieldList = "?fields=values(Problem Investigation ID, Work Log ID, Description, Detailed Description)"
-# GetPbmKEDataUrl= BaseUrl + PBM_WorkLogsUrl + PbmWLQueryQual + WoWLFieldList
+# Construct Url to fetch Problem Worklog Details
 GetPbmWLUrl= BaseUrl+PBM_WorkLogsUrl+PbmWLFieldList
 
-# Known Error Query Parameters
-# PbmKEQueryQual = "?q='Known Error ID'=\"PBM000000024397\""
-#PbmKEFieldList = "?fields=values(Known Error ID, Description, Detailed Decription, Temporary Workaround, Resolution, Categorization Tier 1, Categorization Tier 2, Categorization Tier 3, Product Categorization Tier 1, Product Categorization Tier 2, Product Categorization Tier 3, Generic Categorization Tier 1, Generic Categorization Tier 2, Generic Categorization Tier 3 )"
+# Known Error fields to be retrieved in Query
 PbmKEFieldList = "?fields=values(Known Error ID, Description, Detailed Decription, Temporary Workaround, Resolution)"
-# GetPbmKEDataUrl= BaseUrl + PBM_Url + PbmQueryQual + WoFieldList
+# Construct Url to fetch Knon Error Details
 GetPbmKEUrl= BaseUrl+PBMKE_URL+PbmKEFieldList
 
-# Known Error WorkLogs Query Parameters
-# PbmKEWLQueryQual = "?q='Known Error ID'=\"PBM000000024397\""
+# Known Error WorkLog fields to be retrieved in Query
 PbmKEWLFieldList = "?fields=values(Known Error ID, Work Log ID, Description, Detailed Description)"
-# GetPbmKEWLDataUrl= BaseUrl + PBMKE_WorkLog_URL + PbmQueryQual + WoFieldList
+# Construct Url to fetch Known Error Worklog Details
 GetPbmKEWLUrl= BaseUrl+ PBMKE_WorkLog_URL +PbmKEWLFieldList
 
-# Known Mgmt Query Parameters
-# RkmQueryQual = "?q='Doc ID'=\"KM0000000024397\""
-#RkmFieldList = "?fields=values(DocID, Article_Keywords, Operational Categorization Tier 1, Operational Categorization Tier 2, Operational Categorization Tier 3, Product Categorization Tier 1, Product Categorization Tier 2, Product Categorization Tier 3, Resolution Categorization Tier 1, Resolution Categorization Tier 2, Resolution Categorization Tier 3, Closure Product Category Tier 1, Closure Product Category Tier 2, Closure Product Category Tier 3)"
-#RkmFieldList = "?fields=values(DocID, Article_Keywords)"
-# GetRkmDataUrl= BaseUrl + KM_Url + PbmQueryQual + RkmFieldList
+# Knowledge Mgmt fields and URLs to retrieve details for Knowledge articles in helix
 KM_HowToFieldList = "?fields=values(DocID, Article_Keywords,RKMTemplateQuestion,RKMTemplateAnswer,RKMTemplateTechnicianNotes)"
 GetRkmHowToUrl= BaseUrl+KM_HowToUrl+KM_HowToFieldList
 KM_KcsFieldList = "?fields=values(DocID, Article_Keywords,RKMTemplateKCSProblem,RKMTemplateEnvironment,RKMTemplateResolution,RKMTemplateCause)"

@@ -15,26 +15,20 @@ def getconnection():
         return connection
     except (Exception, Error) as error:
         logs.writeLog(f"Error while connecting to PostgreSQL:{error}", "ERROR")
-        print("Error while connecting to PostgreSQL:", error)
         return None
 
 #-----------------------------------------------------------------
-
-# Create single record 
+# Function to Create single record in database table
 def create_records(connection, data):
     try:
         cursor = connection.cursor()
         insert_query = "INSERT INTO public.\"LLM\" (source, reference, content, content_metadata, content_parts, embedding) VALUES (%s, %s, %s, %s, %s, %s)"
         cursor.execute(insert_query, data)
         connection.commit()
-       #print("Record inserted successfully")        
     except (Exception, Error) as error:
         logs.writeLog(f"Error while inserting a record::{error}", "ERROR")
-        print("Error while inserting a record:", error)
-
 #-----------------------------------------------------------------
-
-# Create bulk records
+# Function to  Create bulk records in database table
 def createBulkRecords(connection, dataRecords):
     try:
         cursor = connection.cursor()
@@ -42,14 +36,11 @@ def createBulkRecords(connection, dataRecords):
         cursor.executemany(insert_query, dataRecords)
         connection.commit()
         logs.writeLog("Records inserted in database successfully.", "INFO")
-       #print("Record inserted successfully")        
     except (Exception, Error) as error:
         logs.writeLog(f"Error while inserting a record::{error}", "ERROR")
-        print("Error while inserting a record:", error)
 
 #-----------------------------------------------------------------
-        
-# Create new record in LoadHistory Table
+# Funtciton to Create new record in LoadHistory Table
 def create_loadhistory(connection, data):
     try:
         cursor = connection.cursor()
@@ -57,14 +48,10 @@ def create_loadhistory(connection, data):
         cursor.execute(insert_query, data)
         connection.commit()
         logs.writeLog("Data Load History Record Created Successfully.", "INFO")
-        print("Load History Record Created Successfully.")        
     except (Exception, Error) as error:
         logs.writeLog(f"Error while inserting a record::{error}", "ERROR")
-        print("Error while inserting a record:", error)
-
 #-----------------------------------------------------------------
-
-# Update record in LoadHistory Table
+# Function to Update record in LoadHistory Table
 def update_loadHistory(connection, data):
     try:
         cursor = connection.cursor()
@@ -72,13 +59,10 @@ def update_loadHistory(connection, data):
         cursor.execute(update_query, data)
         connection.commit()
         logs.writeLog("Data Load History Record Updated Successfully.", "INFO")
-        print("Load History Record Updated Successfully")        
     except (Exception, Error) as error:
         logs.writeLog(f"Error while inserting a record:, {error}", "ERROR")
-        print("Error while inserting a record:", error)
-
 #-----------------------------------------------------------------
-
+# Function to get last load details for a particular source from LoadHistory Table
 def getLastLoadTimestamp(source):
     conn = getconnection()
     query = "SELECT load_timestamp, load_status FROM public.\"LoadHistory\" WHERE source = '" + source + "' ORDER BY load_timestamp DESC LIMIT 1 "
@@ -94,32 +78,27 @@ def getLastLoadTimestamp(source):
             loadStatus=record[1]
             print("Load History Record: ", record)
         if len(records) == 0:
-            print("There are no records present in database for this query.")
+            logs.writeLog("There are no records present in database for this query.", "INFO")
         else:
-            print(f"There are {len(records)} records found in database for this query.")
+            logs.writeLog(f"There are {len(records)} records found in database for this query.", "INFO")
     except (Exception) as error:
         logs.writeLog(f"Error while reading records: {error}", "ERROR")
-        print("Error while reading records:", error)
     
     conn.close()
     return lastLoadTimestamp, loadStatus
-
 #-----------------------------------------------------------------
-
-# Read operation
+# Function to retrieve record from database Table
 def read_records(connection, query):
     try:
         cursor = connection.cursor()
         select_query = query
         cursor.execute(select_query)
         records = cursor.fetchall()
-        for record in records:
-            print(record)
     except (Exception, Error) as error:
         logs.writeLog(f"Error while reading records: {error}", "ERROR")
-        print("Error while reading records:", error)
-
-# Update operation
+    return records
+#-----------------------------------------------------------------
+# Function to update record in database Table
 def update_record(connection, new_data):
     try:
         cursor = connection.cursor()
@@ -127,12 +106,10 @@ def update_record(connection, new_data):
         cursor.execute(update_query, (new_data))
         connection.commit()
         logs.writeLog(f"Database Record updated successfully.", "INFO")        
-        #print("Database Record updated successfully.")
     except (Exception, Error) as error:
         logs.writeLog(f"Error while Updating records: {error}", "ERROR")
-        print("Error while updating a record:", error)
-
-# Delete operation
+#-----------------------------------------------------------------
+# Function to delete record from database Table
 def delete_record(connection, id):
     try:
         cursor = connection.cursor()
@@ -140,13 +117,6 @@ def delete_record(connection, id):
         cursor.execute(delete_query, (id))
         connection.commit()
         logs.writeLog(f"Record deleted successfully", "INFO")
-        #print("Record deleted successfully.")
     except (Exception, Error) as error:
-        print("Error while deleting a record:", error)
-
-con = getconnection()
-if con != 0:
- logs.writeLog(f"Failed to conned to Database.", "ERROR")
- #print("DB Connection is Established")
-
+        logs.writeLog(f"Error while deleting a record:{error}", "ERROR")
 #-----------------------------------------------------------------

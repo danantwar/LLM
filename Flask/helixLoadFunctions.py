@@ -1,17 +1,13 @@
-from flask import Flask, render_template, request, jsonify
-import validateDataLoad as val
-import datetime
+import time
+import threading
+import requests
 from Auth import GetAuthToken as Auth
-import openAIFunctions as ai
+import validateDataLoad as val
 import SQL_Functions as sq
-import contentSplitter as csplit
 import generateEmbeding as ge
 import DataLoadLogging as logs
 import validateDataLoad as val
 import configs as config
-import time
-import threading
-import requests
 
 def loadFromHelixFull():
     source = "HELIX"
@@ -159,7 +155,6 @@ def getRecords(query_params):
         elif load_type == "DELTA" and "RKM:" in url :
             url = url + "&offset=" + str(offset) + "&limit=" + str(limit) + "&q='Modified Date' > " + "\"" + load_timestamp + "\""
         
-        #print ("URL : " + url)        
         # Prepare HTTP Headers for Helix Call
         httpHeaders = {
                 'Authorization': authToken

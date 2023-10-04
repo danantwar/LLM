@@ -1,15 +1,13 @@
-import openAIFunctions as ai
-import SQL_Functions as sq
-import datetime
-import contentSplitter as csplit
-import generateEmbeding as ge
-import fileReadFunctions as frf
 from werkzeug.utils import secure_filename
 import os
+import time
+import shutil
 import validateDataLoad as val
 import DataLoadLogging as logs
-import time
-import threading
+import SQL_Functions as sq
+import generateEmbeding as ge
+import fileReadFunctions as frf
+import configs as conf
 
 def dataLoadFromFile(inputFile):
     # Get the file from the request
@@ -50,21 +48,20 @@ def checkDataExists(filename):
     return dataExists
 #-----------------------------------------------------------------
 
-def loadFromFile(inputFile):
-    
+def loadFromFile(inputFile):    
     #Initialize Variables
     source = "FILE"
-    
+    directory_path = conf.dataFile_dir
+    archive_path =conf.archive_dir
     # Get the file from the request
     file = inputFile
    
     # Save the file to a temporary location
-    filename = secure_filename(file.filename)
-    temp_folder = 'C:\\Users\\jagadish.patil\\myTestEnv\\tempFiles'
-    file.save(os.path.join(temp_folder, filename))
+    filename = secure_filename(file.filename)  
+    file.save(os.path.join(directory_path, filename))
     
       # Load the contents of the file into a string
-    file_path = os.path.join(temp_folder, filename)
+    file_path = os.path.join(directory_path, filename)
     file_content = frf.read_file_content(file_path)
 
     # Add enty in history table for this file
@@ -81,14 +78,13 @@ def loadFromFile(inputFile):
         loadStatus = "Completed"
         args = (loadStatus, source, loadTimestamp)
         val.updateLoadHistory(args)
+    shutil.move(file_path, archive_path)
     end_time = time.time()
     # Calculate the execution time
     execution_time = end_time - start_time
     logs.writeLog(f"Records loaded in database: {recordCount}", "INFO")
     logs.writeLog(f"DataLoad Finished in {execution_time:.6f} seconds.", "INFO")
-    print(f"Execution Time: {execution_time:.6f} seconds.")
     return recordscount
-
 #-----------------------------------------------------------------
 def loadDataInDB(source, filename, file_content):
     dataRecords = []

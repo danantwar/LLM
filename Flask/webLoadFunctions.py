@@ -6,7 +6,6 @@ import SQL_Functions as sq
 import generateEmbeding as ge
 import validateDataLoad as val
 import DataLoadLogging as logs
-import time
 
 def loadFromWeb(url):
     dataExists = checkDataExists(url)
@@ -36,7 +35,7 @@ def checkDataExists(url):
         else:
             dataExists = False
     except (Exception) as error:
-        print("Error while reading records:", error)
+        logs.writeLog(f"Error while reading records:{error}", "ERROR")
   
     conn.close()
     return dataExists
@@ -58,7 +57,6 @@ def getWebData (url):
         page_content = response.text
     else:
         logs.writeLog(f"Failed to fetch webpage content. Status code: {response.status_code}", "ERROR") 
-        #print(f"Failed to fetch webpage content. Status code: {response.status_code}")
         exit()
     soup = BeautifulSoup(page_content, 'html.parser')
     text_content = soup.get_text()
@@ -98,18 +96,16 @@ def loadDataInDB(source, url, web_content):
     
     return count
 #-----------------------------------------------------------------
-
 def loadKBDataInDB(source, url, web_content, web_metadata):
 
     content_metadata = web_metadata
     content = web_content
-
     # Initialize DB Connection
     conn = sq.getconnection() 
     # Code to slpit the contents based on Token limit   
     chunks = ge.generatetokens(content)
     dataRecords = []
-    couint = 0
+    count = 0
     for i, chunk in enumerate(chunks):
         content_parts = str(i+1)+ "/" + str(len(chunks))
         content_metadata = content_metadata
@@ -125,4 +121,4 @@ def loadKBDataInDB(source, url, web_content, web_metadata):
     conn.close()
 
     return count
-#-----------------------------------------------------------------    
+#-----------------------------------------------------------------

@@ -1,32 +1,39 @@
 from bs4 import BeautifulSoup
 import requests
 import re
-#import webLoad as web
-import webLoadFunctions as wb
 from werkzeug.utils import secure_filename
 import os
+import time
+import threading
+import shutil
+import webLoadFunctions as wb
 import SQL_Functions as sq
 import DataLoadLogging as logs
 import validateDataLoad as val
-import time
-import threading
+import configs as conf
 
-def dataLoadFromBMCKB(inputFile):
-    totalrecords = 0
+def dataLoadFromKB(inputFile):
+    #Initialize variables
+    directory_path = conf.dataFile_dir
     # Get the file from the request
     file = inputFile   
     # Save the file to a temporary location
     filename = secure_filename(file.filename)
-    temp_folder = 'C:\\Users\\jagadish.patil\\myTestEnv\\tempFiles'
-    file.save(os.path.join(temp_folder, filename))
-    file_path = os.path.join(temp_folder, filename)
-    threading.Thread(target=processKBFile).start()
-    httpResponse = "Data Load from BMC KB articles Initiated, check logs for more details."
-    #totalrecords=processKBFile()
+    file_ext = filename.split('.')
+    isText = (file_ext[1]== "txt")
+    file.save(os.path.join(directory_path, filename))
+    file_path = os.path.join(directory_path, filename)
+    file_size = os.path.getsize(file_path)
+    
+    if file_size > 0 or isText:    
+        threading.Thread(target=processKBFile).start()
+        httpResponse = "Data Load from KB articles Initiated, check logs for more details."
+    else:
+        httpResponse = "Invalid file for Data Load from KB articles, Kindly provide valid .txt file consists of KB URLs."
     return httpResponse
 #--------------------------------------------------------------------------------------------------------------------------
 def processKBFile():
-    source = "BMC KB"
+    source = "KB"
     loadHistoryResults = val.createLoadHistoryInDB(source)
     loadTimestamp = loadHistoryResults[0]
     loadStatus=loadHistoryResults[1]
@@ -35,8 +42,8 @@ def processKBFile():
 
     # Define a regular expression pattern to match URLs
     url_pattern = r'https?://\S+'
-    directory_path = 'C:\\Users\\jagadish.patil\\myTestEnv\\tempFiles'
-
+    directory_path = conf.KB_dir
+    archive_path = conf.archive_dir
     # List all files in the directory
     file_list = os.listdir(directory_path)
 
@@ -64,6 +71,7 @@ def processKBFile():
                                 print(f"Failed to fetch URL: {url}, Status code: {response.status_code}")
                         except Exception as e:
                             print(f"Error fetching URL: {url}, Error: {e}")
+        shutil.move(file_path, archive_path)          
     if loadStatus == "Running":
         loadStatus = "Completed"
         args = (loadStatus, source, loadTimestamp)
@@ -73,8 +81,6 @@ def processKBFile():
     execution_time = end_time - start_time
     logs.writeLog(f"Records loaded in database: {recordCount}", "INFO")
     logs.writeLog(f"DataLoad Finished in {execution_time:.6f} seconds.", "INFO")
-    print(f"Execution Time: {execution_time:.6f} seconds.")
-    return recordCount
 #--------------------------------------------------------------------------------------------------------------------------
 def checkDataExists(url):
     conn = sq.getconnection()
@@ -122,7 +128,7 @@ def processKBData(url, page_source):
         #print(f"{label}: {value}")
         contentMetaData = contentMetaData + (f"{label}: {value}" +"\n")
         content= content +" "+ value
-    source = "BMC KB"
+    source = "KB"
     recordCount=wb.loadKBDataInDB(source, url, content, contentMetaData)
     return recordCount
 #-----------------------------------------------------------------
