@@ -6,6 +6,7 @@ import SQL_Functions as sq
 import generateEmbeding as ge
 import validateDataLoad as val
 import DataLoadLogging as logs
+import time
 
 def loadFromWeb(url):
     dataExists = checkDataExists(url)
@@ -96,17 +97,6 @@ def loadDataInDB(source, url, web_content):
     conn.close()
     
     return count
-    # # Code to slpit the contents in chunk  
-    # chunks = csplit.contentspiltter(content)
-    # for i, chunk in enumerate(chunks):
-    #     content_parts = str(i+1)+ "/" + str(len(chunks))
-    #     content_metadata = content_metadata
-    #     content = chunk.page_content
-    #     #embeddings = ai.generateEmbeddings(content, "text-embedding-ada-002")
-    #     #print(embeddings)
-    #     data = (source, url, content, content_metadata, content_parts)             
-    #     # Insert records in Database table            
-    #     sq.create_records(conn, data)   
 #-----------------------------------------------------------------
 
 def loadKBDataInDB(source, url, web_content, web_metadata):
@@ -135,15 +125,4 @@ def loadKBDataInDB(source, url, web_content, web_metadata):
     conn.close()
 
     return count
-    # # Code to slpit the contents in chunk  
-    # chunks = csplit.contentspiltter(content)
-    # for i, chunk in enumerate(chunks):
-    #     content_parts = str(i+1)+ "/" + str(len(chunks))
-    #     content_metadata = content_metadata
-    #     content = chunk.page_content
-    #     #embeddings = ai.generateEmbeddings(content, "text-embedding-ada-002")
-    #     #print(embeddings)
-    #     data = (source, url, content, content_metadata, content_parts)             
-    #     # Insert records in Database table            
-    #     sq.create_records(conn, data)
 #-----------------------------------------------------------------    

@@ -5,6 +5,8 @@ import helixLoadFunctions as helix
 import threading
 import validateDataLoad as val
 import webLoadFunctions as wb
+import fileLoadFunctions as fileload
+import loadArtilcesFromFile as kbload
 
 app = Flask(__name__)
 
@@ -62,7 +64,7 @@ def loadHelixDataDelta():
 def loadFromBMCKB():
     if request.form:
         kbFile =  request.form['KBLoad']
-#        httpResponse = load.dataLoadFromBMCKB(kbFile)
+        httpResponse =  kbload.dataLoadFromBMCKB(kbFile)  
         return httpResponse
     else:
         httpResponse = {"error": "Text file with BMC KB URLs is required for this type of data load."}
@@ -75,7 +77,7 @@ def loadFromBMCKB():
 def loadFromFile():
     if request.form:
         dataFile =  request.form['fileUpload']
-#        httpResponse = load.dataLoadFromFile(dataFile)
+        httpResponse = fileload.dataLoadFromFile(dataFile)
         return httpResponse
     else:
         httpResponse = {"error": "Data File is required for this type of data load."}
@@ -134,14 +136,14 @@ def main():
             return render_template('index.html', response=loadResponse)
         
         if Source =="BMC KB":
-            kbFile = request.files['kbLoad']
-#            loadResponse = load.dataLoadFromBMCKB(kbFile)            
-#            return render_template('index.html', response=loadResponse)
+            kbFile = request.files['KBLoad']
+            loadResponse = kbload.dataLoadFromBMCKB(kbFile)            
+            return render_template('index.html', response=loadResponse)
         
         if Source =="FILE":
-            dataFile = request.files['fileUpload']
-#            loadResponse = load.dataLoadFromFile(dataFile)
-#            return render_template('index.html', response=loadResponse)
+            dataFile = request.files['FileUpload']
+            loadResponse = fileload.dataLoadFromFile(dataFile)
+            return render_template('index.html', response=loadResponse)
             
         if Source == "WEB":
             url = request.form['WebURL']
