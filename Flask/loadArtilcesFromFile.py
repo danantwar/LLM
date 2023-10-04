@@ -25,7 +25,7 @@ def dataLoadFromKB(inputFile):
     file_path = os.path.join(directory_path, filename)
     file_size = os.path.getsize(file_path)
     
-    if file_size > 0 or isText:    
+    if file_size > 0 and isText:    
         threading.Thread(target=processKBFile).start()
         httpResponse = "Data Load from KB articles Initiated, check logs for more details."
     else:

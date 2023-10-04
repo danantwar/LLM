@@ -91,7 +91,7 @@
                 <option value="DEFAULT">Please select an Source...</option>
                 <option value="HELIX">HELIX</option>
                 <option value="WEB">WEB</option>
-                <option value="BMC KB">BMC KB</option>
+                <option value="KB">KB</option>
                 <option value="FILE">FILE</option>
             </select>
             <br><br>
@@ -113,7 +113,7 @@
             </div>
             <div id="KBLoad" align="center" style="display: none;">
                 <!-- Field 3 content -->
-                <label for="KBLoadLabel">Provide file with BMC KB URLs: </label>
+                <label for="KBLoadLabel">Provide file with KB URLs: </label>
                 <input type="file" id="KBLoad" name="KBLoad" required>
                 <br><br>
             </div>
@@ -147,7 +147,7 @@
                 document.getElementById('HelixLoad').style.display = 'block';
             } else if (selectedValue == 'WEB') {
                 document.getElementById('WebLoad').style.display = 'block';
-            } else if (selectedValue == 'BMC KB') {
+            } else if (selectedValue == 'KB') {
                 document.getElementById('KBLoad').style.display = 'block';
             } else if (selectedValue == 'FILE') {
                 document.getElementById('FileLoad').style.display = 'block';    
