@@ -14,11 +14,11 @@ AuthUrl = 'https://helixsjc814-demo-restapi.onbmc.com/api/jwt/login'
 username = 'Seth'
 password = 'Password_1234'
 
-# Directory path used for data load using FILE
+# Directory Path used for file storage
 KB_dir = 'C:\\tmp\\LLM\\KBs'
 dataFile_dir = 'C:\\tmp\\LLM\\DataFiles'
 archive_dir = 'C:\\tmp\\LLM\\Archived'
-log_file = 'logs\dataload.log'
+log_file = 'C:\\tmp\\LLM\\Archived\\dataload.log'
 
 # Helix Form Names
 INC_Url = 'HPD:Help Desk'

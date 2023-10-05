@@ -12,7 +12,7 @@ def getconnection():
     dbport = conf.port
     dbname = conf.database
     try:
-        connection = psycopg2.connect(user=user,  password=password,  host=dbhost,  port=dbport,  database=dbname )
+        connection = psycopg2.connect(user=user,  password=password,  host=dbhost,  port=dbport,  database=dbname)
         return connection
     except (Exception, Error) as error:
         logs.writeLog(f"Error while connecting to PostgreSQL:{error}", "ERROR")
