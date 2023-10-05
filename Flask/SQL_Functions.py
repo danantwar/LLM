@@ -1,17 +1,18 @@
 import psycopg2
 from psycopg2 import Error
 import DataLoadLogging as logs
+import configs as conf
 
 # Function to establish a connection to the PostgreSQL database
 def getconnection():
+# Get values from configs
+    user = conf.dbuser
+    password = conf.dbpassword
+    dbhost = conf.host
+    dbport = conf.port
+    dbname = conf.database
     try:
-        connection = psycopg2.connect(
-            user="postgres",
-            password="postgres",
-            host="localhost",
-            port="5435",
-            database="postgres"
-        )
+        connection = psycopg2.connect(user, password, dbhost, dbport, dbname)
         return connection
     except (Exception, Error) as error:
         logs.writeLog(f"Error while connecting to PostgreSQL:{error}", "ERROR")

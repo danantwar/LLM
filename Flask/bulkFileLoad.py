@@ -51,7 +51,12 @@ def loadFileInBulk():
                     recordCount += fl.loadDataInDB (source, filename, file_content)
             else:
                 logs.writeLog(f"Data already exist in database for {filename} , skipping this file.", "WARN")
+
+            destination_path = os.path.join(archive_path, os.path.basename(filename))
+            if os.path.exists(destination_path):
+                os.remove(destination_path) 
             shutil.move(file_path, archive_path)
+
         if loadStatus == "Running":
             loadStatus = "Completed"
             args = (loadStatus, source, loadTimestamp)

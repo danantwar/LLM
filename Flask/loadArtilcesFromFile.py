@@ -71,6 +71,9 @@ def processKBFile():
                                 print(f"Failed to fetch URL: {url}, Status code: {response.status_code}")
                         except Exception as e:
                             print(f"Error fetching URL: {url}, Error: {e}")
+        destination_path = os.path.join(archive_path, os.path.basename(filename))
+        if os.path.exists(destination_path):
+            os.remove(destination_path) 
         shutil.move(file_path, archive_path)          
     if loadStatus == "Running":
         loadStatus = "Completed"

@@ -1,5 +1,13 @@
 # This file contains configuration values used in all other python files
 
+# Database Connectivity details
+dbuser="postgres"
+dbpassword="postgres"
+host="localhost"
+port="5435"
+database="postgres"
+
+
 # Helix API endpoint URLs and Credentials
 BaseUrl = 'https://helixsjc814-demo-restapi.onbmc.com/api/arsys/v1/entry/'
 AuthUrl = 'https://helixsjc814-demo-restapi.onbmc.com/api/jwt/login'
