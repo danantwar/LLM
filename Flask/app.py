@@ -10,7 +10,46 @@ import bulkFileLoad as bf
 import loadArtilcesFromFile as kbload
 import bulkFileLoad as bf
 
+#--------------------------------------------------------------------------------------------------------------------------
+
 app = Flask(__name__)
+
+#--------------------------------------------------------------------------------------------------------------------------
+# ------- Following def main() function will be triggered for cals received from WebApp ------------------------------------
+@app.route('/', methods=['GET', 'POST'])
+def main():
+    if request.method == 'POST':
+        Source = request.form['LoadSource']
+        LoadType = request.form['HelixLoadType']
+        loadResponse = ""
+                
+        if Source =="HELIX" and LoadType =="FULL" :
+            loadResponse = helix.loadFromHelixFull()
+            return render_template('index.html', response=loadResponse)
+        
+        if Source =="HELIX" and LoadType =="DELTA" :
+            loadResponse = helix.loadHelixDataDelta()
+
+            return render_template('index.html', response=loadResponse)
+        
+        if Source =="KB":
+            kbFile = request.files['KBLoad']
+            loadResponse = kbload.dataLoadFromKB(kbFile)            
+            return render_template('index.html', response=loadResponse)
+        
+        if Source =="FILE":
+            dataFile = request.files['FileUpload']
+            loadResponse = fileload.dataLoadFromFile(dataFile)
+            return render_template('index.html', response=loadResponse)
+        if Source =="BULKFILE":
+            loadResponse = bf.startBulkLoad()
+            return render_template('index.html', response=loadResponse)
+        if Source == "WEB":
+            url = request.form['Web_URL']
+            loadResponse = wb.loadFromWeb(url)
+            return render_template('index.html', response=loadResponse)
+
+    return render_template('index.html')
 
 #------- Following Functions will be triggered by REST API Calls ----------------------------#
 @app.post("/load")
@@ -141,42 +180,6 @@ def loadFromWeb():
     response = jsonify(httpResponse)
     response.status_code = httpCode
     return response
-#--------------------------------------------------------------------------------------------------------------------------
-
-@app.route('/', methods=['GET', 'POST'])
-def main():
-    if request.method == 'POST':
-        Source = request.form['LoadSource']
-        LoadType = request.form['HelixLoadType']
-        loadResponse = ""
-                
-        if Source =="HELIX" and LoadType =="FULL" :
-            loadResponse = helix.loadFromHelixFull()
-            return render_template('index.html', response=loadResponse)
-        
-        if Source =="HELIX" and LoadType =="DELTA" :
-            loadResponse = helix.loadHelixDataDelta()
-
-            return render_template('index.html', response=loadResponse)
-        
-        if Source =="KB":
-            kbFile = request.files['KBLoad']
-            loadResponse = kbload.dataLoadFromKB(kbFile)            
-            return render_template('index.html', response=loadResponse)
-        
-        if Source =="FILE":
-            dataFile = request.files['FileUpload']
-            loadResponse = fileload.dataLoadFromFile(dataFile)
-            return render_template('index.html', response=loadResponse)
-        if Source =="BULKFILE":
-            loadResponse = bf.startBulkLoad()
-            return render_template('index.html', response=loadResponse)
-        if Source == "WEB":
-            url = request.form['WebURL']
-            loadResponse = wb.loadFromWeb(url)
-            return render_template('index.html', response=loadResponse)
-
-    return render_template('index.html')
 
 if __name__ == '__main__':
     app.run(debug=False)

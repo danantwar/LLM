@@ -14,7 +14,7 @@ import configs as conf
 
 def dataLoadFromKB(inputFile):
     #Initialize variables
-    directory_path = conf.dataFile_dir
+    directory_path = conf.KB_dir
     # Get the file from the request
     file = inputFile   
     # Save the file to a temporary location

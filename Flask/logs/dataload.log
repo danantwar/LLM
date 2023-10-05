@@ -1,0 +1,169 @@
+2023-10-05 15:37:15,384 - INFO: There are no records present in database for this query.
+2023-10-05 15:37:15,384 - INFO: Delta Data Load Initiated for Data Source:HELIX.
+2023-10-05 15:37:15,385 - INFO: In HelixLoad Function.
+2023-10-05 15:37:15,386 - INFO: 127.0.0.1 - - [05/Oct/2023 15:37:15] "POST / HTTP/1.1" 200 -
+2023-10-05 15:37:15,418 - INFO: Data Load History Record Created Successfully.
+2023-10-05 15:37:15,419 - INFO: Data Load process started for records in Incident form.
+2023-10-05 15:37:15,423 - DEBUG: Starting new HTTPS connection (1): helixsjc814-demo-restapi.onbmc.com:443
+2023-10-05 15:37:17,708 - DEBUG: https://helixsjc814-demo-restapi.onbmc.com:443 "POST /api/jwt/login HTTP/1.1" 200 557
+2023-10-05 15:37:17,712 - DEBUG: Starting new HTTPS connection (1): helixsjc814-demo-restapi.onbmc.com:443
+2023-10-05 15:37:19,939 - DEBUG: https://helixsjc814-demo-restapi.onbmc.com:443 "GET /api/arsys/v1/entry/HPD:Help%20Desk?fields=values(Incident%20Number,%20Description,%20Detailed%20Decription,%20Resolution)&offset=0&limit=1000&q='Last%20Modified%20Date'%20%3E%20%2210/05/2023%2010:07:15%20AM%22 HTTP/1.1" 200 320
+2023-10-05 15:37:19,946 - INFO: Data Load process started for records in IncidentWorkLog form.
+2023-10-05 15:37:19,954 - DEBUG: Starting new HTTPS connection (1): helixsjc814-demo-restapi.onbmc.com:443
+2023-10-05 15:37:22,169 - DEBUG: https://helixsjc814-demo-restapi.onbmc.com:443 "POST /api/jwt/login HTTP/1.1" 200 557
+2023-10-05 15:37:22,184 - DEBUG: Starting new HTTPS connection (1): helixsjc814-demo-restapi.onbmc.com:443
+2023-10-05 15:37:24,392 - DEBUG: https://helixsjc814-demo-restapi.onbmc.com:443 "GET /api/arsys/v1/entry/HPD:WorkLog?fields=values(Incident%20Number,%20Work%20Log%20ID,%20Description,%20Detailed%20Description)&offset=0&limit=1000&q='Last%20Modified%20Date'%20%3E%20%2210/05/2023%2010:07:15%20AM%22 HTTP/1.1" 200 322
+2023-10-05 15:37:24,394 - INFO: Data Load process started for records in Change form.
+2023-10-05 15:37:24,396 - DEBUG: Starting new HTTPS connection (1): helixsjc814-demo-restapi.onbmc.com:443
+2023-10-05 15:37:26,490 - DEBUG: https://helixsjc814-demo-restapi.onbmc.com:443 "POST /api/jwt/login HTTP/1.1" 200 557
+2023-10-05 15:37:26,504 - DEBUG: Starting new HTTPS connection (1): helixsjc814-demo-restapi.onbmc.com:443
+2023-10-05 15:37:28,688 - DEBUG: https://helixsjc814-demo-restapi.onbmc.com:443 "GET /api/arsys/v1/entry/CHG:Infrastructure%20Change?fields=values(Infrastructure%20Change%20ID,%20Description,%20Detailed%20Description)&offset=0&limit=1000&q='Last%20Modified%20Date'%20%3E%20%2210/05/2023%2010:07:15%20AM%22 HTTP/1.1" 200 328
+2023-10-05 15:37:28,697 - INFO: Data Load process started for records in ChangeWorkLog form.
+2023-10-05 15:37:28,704 - DEBUG: Starting new HTTPS connection (1): helixsjc814-demo-restapi.onbmc.com:443
+2023-10-05 15:37:30,716 - DEBUG: https://helixsjc814-demo-restapi.onbmc.com:443 "POST /api/jwt/login HTTP/1.1" 200 557
+2023-10-05 15:37:30,729 - DEBUG: Starting new HTTPS connection (1): helixsjc814-demo-restapi.onbmc.com:443
+2023-10-05 15:37:32,666 - DEBUG: https://helixsjc814-demo-restapi.onbmc.com:443 "GET /api/arsys/v1/entry/CHG:WorkLog?fields=values(Infrastructure%20Change%20ID,%20Work%20Log%20ID,%20Description,%20Detailed%20Description)&offset=0&limit=1000&q='Last%20Modified%20Date'%20%3E%20%2210/05/2023%2010:07:15%20AM%22 HTTP/1.1" 200 333
+2023-10-05 15:37:32,671 - INFO: Data Load process started for records in WorkOrder form.
+2023-10-05 15:37:32,674 - DEBUG: Starting new HTTPS connection (1): helixsjc814-demo-restapi.onbmc.com:443
+2023-10-05 15:37:34,805 - DEBUG: https://helixsjc814-demo-restapi.onbmc.com:443 "POST /api/jwt/login HTTP/1.1" 200 557
+2023-10-05 15:37:34,811 - DEBUG: Starting new HTTPS connection (1): helixsjc814-demo-restapi.onbmc.com:443
+2023-10-05 15:37:37,214 - DEBUG: https://helixsjc814-demo-restapi.onbmc.com:443 "GET /api/arsys/v1/entry/WOI:WorkOrder?fields=values(Work%20Order%20ID,%20Summary,%20Detailed%20Description)&offset=0&limit=1000&q='Last%20Modified%20Date'%20%3E%20%2210/05/2023%2010:07:15%20AM%22 HTTP/1.1" 200 299
+2023-10-05 15:37:37,216 - INFO: Data Load process started for records in WorkOrderWorkLog form.
+2023-10-05 15:37:37,218 - DEBUG: Starting new HTTPS connection (1): helixsjc814-demo-restapi.onbmc.com:443
+2023-10-05 15:37:39,392 - DEBUG: https://helixsjc814-demo-restapi.onbmc.com:443 "POST /api/jwt/login HTTP/1.1" 200 557
+2023-10-05 15:37:39,403 - DEBUG: Starting new HTTPS connection (1): helixsjc814-demo-restapi.onbmc.com:443
+2023-10-05 15:37:41,594 - DEBUG: https://helixsjc814-demo-restapi.onbmc.com:443 "GET /api/arsys/v1/entry/WOI:WorkInfo?fields=values(Work%20Order%20ID,%20Work%20Log%20ID,%20Description,%20Detailed%20Description)&offset=0&limit=1000&q='Last%20Modified%20Date'%20%3E%20%2210/05/2023%2010:07:15%20AM%22 HTTP/1.1" 200 323
+2023-10-05 15:37:41,601 - INFO: Data Load process started for records in Problem form.
+2023-10-05 15:37:41,608 - DEBUG: Starting new HTTPS connection (1): helixsjc814-demo-restapi.onbmc.com:443
+2023-10-05 15:37:43,514 - DEBUG: https://helixsjc814-demo-restapi.onbmc.com:443 "POST /api/jwt/login HTTP/1.1" 200 557
+2023-10-05 15:37:43,520 - DEBUG: Starting new HTTPS connection (1): helixsjc814-demo-restapi.onbmc.com:443
+2023-10-05 15:37:45,459 - DEBUG: https://helixsjc814-demo-restapi.onbmc.com:443 "GET /api/arsys/v1/entry/PBM:Problem%20Investigation?fields=values(Problem%20Investigation%20ID,%20Description,%20Detailed%20Decription,%20Temporary%20Workaround,%20Implemented%20Solution)&offset=0&limit=1000&q='Last%20Modified%20Date'%20%3E%20%2210/05/2023%2010:07:15%20AM%22 HTTP/1.1" 200 383
+2023-10-05 15:37:45,468 - INFO: Data Load process started for records in ProblemWorkLog form.
+2023-10-05 15:37:45,472 - DEBUG: Starting new HTTPS connection (1): helixsjc814-demo-restapi.onbmc.com:443
+2023-10-05 15:37:47,676 - DEBUG: https://helixsjc814-demo-restapi.onbmc.com:443 "POST /api/jwt/login HTTP/1.1" 200 557
+2023-10-05 15:37:47,682 - DEBUG: Starting new HTTPS connection (1): helixsjc814-demo-restapi.onbmc.com:443
+2023-10-05 15:37:49,805 - DEBUG: https://helixsjc814-demo-restapi.onbmc.com:443 "GET /api/arsys/v1/entry/PBM:Investigation%20WorkLog?fields=values(Problem%20Investigation%20ID,%20Work%20Log%20ID,%20Description,%20Detailed%20Description)&offset=0&limit=1000&q='Last%20Modified%20Date'%20%3E%20%2210/05/2023%2010:07:15%20AM%22 HTTP/1.1" 200 349
+2023-10-05 15:37:49,807 - INFO: Data Load process started for records in KnownError form.
+2023-10-05 15:37:49,810 - DEBUG: Starting new HTTPS connection (1): helixsjc814-demo-restapi.onbmc.com:443
+2023-10-05 15:37:51,874 - DEBUG: https://helixsjc814-demo-restapi.onbmc.com:443 "POST /api/jwt/login HTTP/1.1" 200 557
+2023-10-05 15:37:51,879 - DEBUG: Starting new HTTPS connection (1): helixsjc814-demo-restapi.onbmc.com:443
+2023-10-05 15:37:54,045 - DEBUG: https://helixsjc814-demo-restapi.onbmc.com:443 "GET /api/arsys/v1/entry/PBM:Known%20Error?fields=values(Known%20Error%20ID,%20Description,%20Detailed%20Decription,%20Temporary%20Workaround,%20Resolution)&offset=0&limit=1000&q='Last%20Modified%20Date'%20%3E%20%2210/05/2023%2010:07:15%20AM%22 HTTP/1.1" 200 351
+2023-10-05 15:37:54,049 - INFO: Data Load process started for records in KnownErrorWorkLog form.
+2023-10-05 15:37:54,051 - DEBUG: Starting new HTTPS connection (1): helixsjc814-demo-restapi.onbmc.com:443
+2023-10-05 15:37:56,407 - DEBUG: https://helixsjc814-demo-restapi.onbmc.com:443 "POST /api/jwt/login HTTP/1.1" 200 557
+2023-10-05 15:37:56,411 - DEBUG: Starting new HTTPS connection (1): helixsjc814-demo-restapi.onbmc.com:443
+2023-10-05 15:37:58,867 - DEBUG: https://helixsjc814-demo-restapi.onbmc.com:443 "GET /api/arsys/v1/entry/PBM:Known%20Error%20WorkLog?fields=values(Known%20Error%20ID,%20Work%20Log%20ID,%20Description,%20Detailed%20Description)&offset=0&limit=1000&q='Last%20Modified%20Date'%20%3E%20%2210/05/2023%2010:07:15%20AM%22 HTTP/1.1" 200 339
+2023-10-05 15:37:58,870 - INFO: Data Load process started for records in KnowledgeHowTo form.
+2023-10-05 15:37:58,872 - DEBUG: Starting new HTTPS connection (1): helixsjc814-demo-restapi.onbmc.com:443
+2023-10-05 15:38:01,183 - DEBUG: https://helixsjc814-demo-restapi.onbmc.com:443 "POST /api/jwt/login HTTP/1.1" 200 557
+2023-10-05 15:38:01,188 - DEBUG: Starting new HTTPS connection (1): helixsjc814-demo-restapi.onbmc.com:443
+2023-10-05 15:38:03,323 - DEBUG: https://helixsjc814-demo-restapi.onbmc.com:443 "GET /api/arsys/v1/entry/RKM:HowToTemplate_Manageable_Join?fields=values(DocID,%20Article_Keywords,RKMTemplateQuestion,RKMTemplateAnswer,RKMTemplateTechnicianNotes)&offset=0&limit=1000&q='Modified%20Date'%20%3E%20%2210/05/2023%2010:07:15%20AM%22 HTTP/1.1" 200 352
+2023-10-05 15:38:03,326 - INFO: Data Load process started for records in KnowledgeKcs form.
+2023-10-05 15:38:03,328 - DEBUG: Starting new HTTPS connection (1): helixsjc814-demo-restapi.onbmc.com:443
+2023-10-05 15:38:05,390 - DEBUG: https://helixsjc814-demo-restapi.onbmc.com:443 "POST /api/jwt/login HTTP/1.1" 200 557
+2023-10-05 15:38:05,401 - DEBUG: Starting new HTTPS connection (1): helixsjc814-demo-restapi.onbmc.com:443
+2023-10-05 15:38:07,345 - DEBUG: https://helixsjc814-demo-restapi.onbmc.com:443 "GET /api/arsys/v1/entry/RKM:KCS:Template_Manageable_Join?fields=values(DocID,%20Article_Keywords,RKMTemplateKCSProblem,RKMTemplateEnvironment,RKMTemplateResolution,RKMTemplateCause)&offset=0&limit=1000&q='Modified%20Date'%20%3E%20%2210/05/2023%2010:07:15%20AM%22 HTTP/1.1" 200 372
+2023-10-05 15:38:07,347 - INFO: Data Load process started for records in KnowledgeKe form.
+2023-10-05 15:38:07,349 - DEBUG: Starting new HTTPS connection (1): helixsjc814-demo-restapi.onbmc.com:443
+2023-10-05 15:38:09,604 - DEBUG: https://helixsjc814-demo-restapi.onbmc.com:443 "POST /api/jwt/login HTTP/1.1" 200 557
+2023-10-05 15:38:09,616 - DEBUG: Starting new HTTPS connection (1): helixsjc814-demo-restapi.onbmc.com:443
+2023-10-05 15:38:12,651 - DEBUG: https://helixsjc814-demo-restapi.onbmc.com:443 "GET /api/arsys/v1/entry/RKM:KnownErrorTemplate_Manageable_Join?fields=values(DocID,%20Article_Keywords,RKMTemplateError,RKMTemplateFix,RKMTemplateRootCause,RKMTemplateTechnicianNotes)&offset=0&limit=1000&q='Modified%20Date'%20%3E%20%2210/05/2023%2010:07:15%20AM%22 HTTP/1.1" 200 374
+2023-10-05 15:38:12,655 - INFO: Data Load process started for records in KnowledgePbm form.
+2023-10-05 15:38:12,659 - DEBUG: Starting new HTTPS connection (1): helixsjc814-demo-restapi.onbmc.com:443
+2023-10-05 15:38:14,926 - DEBUG: https://helixsjc814-demo-restapi.onbmc.com:443 "POST /api/jwt/login HTTP/1.1" 200 557
+2023-10-05 15:38:14,937 - DEBUG: Starting new HTTPS connection (1): helixsjc814-demo-restapi.onbmc.com:443
+2023-10-05 15:38:17,273 - DEBUG: https://helixsjc814-demo-restapi.onbmc.com:443 "GET /api/arsys/v1/entry/RKM:ProblemSolutionTemplate_Manageable_Join?fields=values(DocID,%20Article_Keywords,RKMTemplateProblem,RKMTemplateSolution,RKMTemplateTechnicianNotes)&offset=0&limit=1000&q='Modified%20Date'%20%3E%20%2210/05/2023%2010:07:15%20AM%22 HTTP/1.1" 200 363
+2023-10-05 15:38:17,279 - INFO: Data Load process started for records in KnowledgeRef form.
+2023-10-05 15:38:17,287 - DEBUG: Starting new HTTPS connection (1): helixsjc814-demo-restapi.onbmc.com:443
+2023-10-05 15:38:19,310 - DEBUG: https://helixsjc814-demo-restapi.onbmc.com:443 "POST /api/jwt/login HTTP/1.1" 200 557
+2023-10-05 15:38:19,323 - DEBUG: Starting new HTTPS connection (1): helixsjc814-demo-restapi.onbmc.com:443
+2023-10-05 15:38:21,447 - DEBUG: https://helixsjc814-demo-restapi.onbmc.com:443 "GET /api/arsys/v1/entry/RKM:ReferenceTemplate_Manageable_Join?fields=values(DocID,%20Article_Keywords,Reference)&offset=0&limit=1000&q='Modified%20Date'%20%3E%20%2210/05/2023%2010:07:15%20AM%22 HTTP/1.1" 200 297
+2023-10-05 15:38:21,503 - INFO: Data Load History Record Updated Successfully.
+2023-10-05 15:38:21,503 - INFO: Records loaded in database: 0
+2023-10-05 15:38:21,503 - INFO: DataLoad Finished in 66.084124 seconds.
+2023-10-05 15:39:15,980 - INFO: 127.0.0.1 - - [05/Oct/2023 15:39:15] "POST / HTTP/1.1" 200 -
+2023-10-05 15:39:16,004 - INFO: Data Load History Record Created Successfully.
+2023-10-05 15:39:16,129 - DEBUG: Starting new HTTPS connection (1): bmcapps.my.site.com:443
+2023-10-05 15:39:22,692 - DEBUG: https://bmcapps.my.site.com:443 "GET /casemgmt/sc_KnowledgeArticle?sfdcid=kA33n000000XzWICA0&type=FAQ HTTP/1.1" 200 45156
+2023-10-05 15:39:23,321 - INFO: Records inserted in database successfully.
+2023-10-05 15:39:23,347 - DEBUG: Starting new HTTPS connection (1): bmcapps.my.site.com:443
+2023-10-05 15:39:31,220 - DEBUG: https://bmcapps.my.site.com:443 "GET /casemgmt/sc_KnowledgeArticle?sfdcid=kA33n000000Y9wzCAC&type=FAQ HTTP/1.1" 200 44819
+2023-10-05 15:39:31,789 - INFO: Records inserted in database successfully.
+2023-10-05 15:39:31,819 - DEBUG: Starting new HTTPS connection (1): bmcapps.my.site.com:443
+2023-10-05 15:39:39,817 - DEBUG: https://bmcapps.my.site.com:443 "GET /casemgmt/sc_KnowledgeArticle?sfdcid=kA33n000000Y9mCCAS&type=FAQ HTTP/1.1" 200 44346
+2023-10-05 15:39:40,367 - INFO: Records inserted in database successfully.
+2023-10-05 15:39:40,390 - DEBUG: Starting new HTTPS connection (1): bmcapps.my.site.com:443
+2023-10-05 15:39:47,619 - DEBUG: https://bmcapps.my.site.com:443 "GET /casemgmt/sc_KnowledgeArticle?sfdcid=kA33n000000XgE8CAK&type=FAQ HTTP/1.1" 200 44060
+2023-10-05 15:39:48,119 - INFO: Records inserted in database successfully.
+2023-10-05 15:39:48,142 - DEBUG: Starting new HTTPS connection (1): bmcapps.my.site.com:443
+2023-10-05 15:39:54,445 - DEBUG: https://bmcapps.my.site.com:443 "GET /casemgmt/sc_KnowledgeArticle?sfdcid=kA33n000000XgEYCA0&type=FAQ HTTP/1.1" 200 43349
+2023-10-05 15:39:54,935 - INFO: Records inserted in database successfully.
+2023-10-05 15:39:54,961 - DEBUG: Starting new HTTPS connection (1): bmcapps.my.site.com:443
+2023-10-05 15:40:01,407 - DEBUG: https://bmcapps.my.site.com:443 "GET /casemgmt/sc_KnowledgeArticle?sfdcid=kA33n000000Y2qHCAS&type=FAQ HTTP/1.1" 200 44619
+2023-10-05 15:40:01,999 - INFO: Records inserted in database successfully.
+2023-10-05 15:40:02,039 - DEBUG: Starting new HTTPS connection (1): bmcapps.my.site.com:443
+2023-10-05 15:40:10,029 - DEBUG: https://bmcapps.my.site.com:443 "GET /casemgmt/sc_KnowledgeArticle?sfdcid=kA33n000000Xl60CAC&type=FAQ HTTP/1.1" 200 42583
+2023-10-05 15:40:10,539 - INFO: Records inserted in database successfully.
+2023-10-05 15:40:10,563 - DEBUG: Starting new HTTPS connection (1): bmcapps.my.site.com:443
+2023-10-05 15:40:16,186 - DEBUG: https://bmcapps.my.site.com:443 "GET /casemgmt/sc_KnowledgeArticle?sfdcid=kA33n000000XfmgCAC&type=FAQ HTTP/1.1" 200 43877
+2023-10-05 15:40:16,722 - INFO: Records inserted in database successfully.
+2023-10-05 15:40:16,745 - DEBUG: Starting new HTTPS connection (1): bmcapps.my.site.com:443
+2023-10-05 15:40:24,031 - DEBUG: https://bmcapps.my.site.com:443 "GET /casemgmt/sc_KnowledgeArticle?sfdcid=kA33n000000XccECAS&type=FAQ HTTP/1.1" 200 44286
+2023-10-05 15:40:24,528 - INFO: Records inserted in database successfully.
+2023-10-05 15:40:24,550 - DEBUG: Starting new HTTPS connection (1): bmcapps.my.site.com:443
+2023-10-05 15:40:30,471 - DEBUG: https://bmcapps.my.site.com:443 "GET /casemgmt/sc_KnowledgeArticle?sfdcid=kA33n000000Y68RCAS&type=FAQ HTTP/1.1" 200 42666
+2023-10-05 15:40:30,860 - INFO: Records inserted in database successfully.
+2023-10-05 15:40:30,884 - DEBUG: Starting new HTTPS connection (1): bmcapps.my.site.com:443
+2023-10-05 15:40:36,871 - DEBUG: https://bmcapps.my.site.com:443 "GET /casemgmt/sc_KnowledgeArticle?sfdcid=kA33n000000Y686CAC&type=FAQ HTTP/1.1" 200 42831
+2023-10-05 15:40:37,374 - INFO: Records inserted in database successfully.
+2023-10-05 15:40:37,395 - INFO: Data Load History Record Updated Successfully.
+2023-10-05 15:40:37,395 - INFO: Records loaded in database: 22
+2023-10-05 15:40:37,395 - INFO: DataLoad Finished in 81.390530 seconds.
+2023-10-05 15:44:26,228 - INFO: There are 1 records found in database for this query.
+2023-10-05 15:44:26,229 - INFO: 127.0.0.1 - - [05/Oct/2023 15:44:26] "POST / HTTP/1.1" 200 -
+2023-10-05 15:44:26,256 - INFO: Data Load History Record Created Successfully.
+2023-10-05 15:44:26,303 - WARNING: Data already exist in database for Process Document for CV creation in  PSA v1.0.pdf , skipping this file.
+2023-10-05 15:44:26,324 - WARNING: Data already exist in database for Standard Integration Approach.docx , skipping this file.
+2023-10-05 15:44:26,344 - WARNING: Data already exist in database for Webservice_INC4634215.log , skipping this file.
+2023-10-05 15:44:26,366 - INFO: Data Load History Record Updated Successfully.
+2023-10-05 15:44:26,366 - INFO: Records loaded in database: 0
+2023-10-05 15:44:26,366 - INFO: DataLoad Finished in 0.109590 seconds.
+2023-10-05 15:45:54,189 - INFO: There are 1 records found in database for this query.
+2023-10-05 15:45:54,191 - INFO: 127.0.0.1 - - [05/Oct/2023 15:45:54] "POST / HTTP/1.1" 200 -
+2023-10-05 15:45:54,212 - INFO: Data Load History Record Created Successfully.
+2023-10-05 15:45:54,219 - INFO: There are 1 records found in database for this query.
+2023-10-05 15:45:54,220 - ERROR: Previous Bulk File Data Load not completed yet, wait for previous load completion.
+2023-10-05 15:45:54,220 - ERROR: Data Load Terminated.
+2023-10-05 15:45:54,221 - INFO: 127.0.0.1 - - [05/Oct/2023 15:45:54] "POST / HTTP/1.1" 200 -
+2023-10-05 15:45:55,220 - INFO: Records inserted in database successfully.
+2023-10-05 15:45:55,680 - INFO: Records inserted in database successfully.
+2023-10-05 15:45:55,741 - INFO: Records inserted in database successfully.
+2023-10-05 15:45:55,763 - INFO: Data Load History Record Updated Successfully.
+2023-10-05 15:45:55,763 - INFO: Records loaded in database: 5
+2023-10-05 15:45:55,763 - INFO: DataLoad Finished in 1.549753 seconds.
+2023-10-05 15:47:28,554 - ERROR: Data already exist in database for Webservice_INC4634215.log , please try data load for any other File.
+2023-10-05 15:47:28,554 - ERROR: Data Load Terminated.
+2023-10-05 15:47:28,555 - INFO: 127.0.0.1 - - [05/Oct/2023 15:47:28] "POST / HTTP/1.1" 200 -
+2023-10-05 15:47:46,832 - INFO: Data Load Initiated from File: amazon-invoice.pdf
+2023-10-05 15:47:46,910 - INFO: Data Load History Record Created Successfully.
+2023-10-05 15:47:47,308 - INFO: Records inserted in database successfully.
+2023-10-05 15:47:47,328 - INFO: Data Load History Record Updated Successfully.
+2023-10-05 15:47:47,330 - INFO: Records loaded in database: 0
+2023-10-05 15:47:47,330 - INFO: DataLoad Finished in 0.420457 seconds.
+2023-10-05 15:47:47,331 - INFO: 127.0.0.1 - - [05/Oct/2023 15:47:47] "POST / HTTP/1.1" 200 -
+2023-10-05 15:48:27,008 - INFO: 127.0.0.1 - - [05/Oct/2023 15:48:27] "GET / HTTP/1.1" 200 -
+2023-10-05 15:48:39,128 - INFO: 127.0.0.1 - - [05/Oct/2023 15:48:39] "[31m[1mPOST / HTTP/1.1[0m" 400 -
+2023-10-05 15:50:15,821 - INFO: Data Load Initiated from website URL: https://en.wikipedia.org/wiki/BMC_Software
+2023-10-05 15:50:15,839 - INFO: Data Load History Record Created Successfully.
+2023-10-05 15:50:15,840 - DEBUG: Starting new HTTPS connection (1): en.wikipedia.org:443
+2023-10-05 15:50:16,462 - INFO: Data Load Initiated from website URL: https://en.wikipedia.org/wiki/BMC_Software
+2023-10-05 15:50:16,502 - INFO: Data Load History Record Created Successfully.
+2023-10-05 15:50:16,504 - DEBUG: Starting new HTTPS connection (1): en.wikipedia.org:443
+2023-10-05 15:50:17,046 - DEBUG: https://en.wikipedia.org:443 "GET /wiki/BMC_Software HTTP/1.1" 200 33942
+2023-10-05 15:50:17,502 - DEBUG: https://en.wikipedia.org:443 "GET /wiki/BMC_Software HTTP/1.1" 200 33942
+2023-10-05 15:50:17,815 - INFO: Records inserted in database successfully.
+2023-10-05 15:50:17,816 - INFO: Records loaded in database: 2
+2023-10-05 15:50:17,817 - INFO: 127.0.0.1 - - [05/Oct/2023 15:50:17] "POST / HTTP/1.1" 200 -
+2023-10-05 15:50:18,251 - INFO: Records inserted in database successfully.
+2023-10-05 15:50:18,251 - INFO: Records loaded in database: 2
+2023-10-05 15:50:18,251 - INFO: 127.0.0.1 - - [05/Oct/2023 15:50:18] "POST / HTTP/1.1" 200 -
