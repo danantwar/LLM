@@ -95,8 +95,7 @@ def loadDataInDB(source, url, web_content):
     count = len(dataRecords)    
     sq.createBulkRecords(conn, dataRecords)   
     # Close DB Connection
-    conn.close()
-    
+    conn.close()    
     return count
 #-----------------------------------------------------------------
 def loadKBDataInDB(source, url, web_content, web_metadata):

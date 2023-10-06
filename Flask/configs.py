@@ -20,6 +20,9 @@ dataFile_dir = 'C:\\tmp\\LLM\\DataFiles'
 archive_dir = 'C:\\tmp\\LLM\\Archived'
 log_file = 'logs\dataload.log'
 
+# Define the token limit for model tokenizer
+model_token_limit = 500
+
 # Helix Form Names
 INC_Url = 'HPD:Help Desk'
 INC_WorkLogUrl = 'HPD:WorkLog'

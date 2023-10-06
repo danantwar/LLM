@@ -194,7 +194,7 @@ def loadDataInDB(args):
 
 
         for key, value in values.items():
-            if key not in {"Incident Number", "Infrastructure Change ID", "Work Order ID", "Problem Investigation ID", "Known Error ID", "DocID"}:
+            if key not in {"Incident Number", "Infrastructure Change ID", "Work Order ID", "Problem Investigation ID", "Known Error ID", "DocID", "Work Log ID"}:
                 record_data += str(value) +"\n"
             record_metadata += f"{key}: {value},\n"
                       

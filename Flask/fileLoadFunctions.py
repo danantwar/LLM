@@ -79,6 +79,9 @@ def loadFromFile(inputFile):
         loadStatus = "Completed"
         args = (loadStatus, source, loadTimestamp)
         val.updateLoadHistory(args)
+    destination_path = os.path.join(archive_path, os.path.basename(filename))
+    if os.path.exists(destination_path):
+        os.remove(destination_path) 
     shutil.move(file_path, archive_path)
     end_time = time.time()
     # Calculate the execution time

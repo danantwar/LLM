@@ -1,5 +1,6 @@
 from sentence_transformers import SentenceTransformer
 from sentence_transformers.util import cos_sim
+import configs as conf
 model = SentenceTransformer('BAAI/bge-small-en')
 
 def generateEmbedding(content):
@@ -15,7 +16,7 @@ def generatetokens(content):
     tokens = tokens[1:numberoftokens-1]
     
     # Define the token limit
-    token_limit = 500
+    token_limit = conf.model_token_limit
     # Initialize variables to keep track of chunks and the current chunk
     chunks = []
     current_chunk = []
