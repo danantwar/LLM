@@ -8,6 +8,7 @@ import SQL_Functions as sq
 import generateEmbeding as ge
 import fileReadFunctions as frf
 import configs as conf
+import contentSplitter as csplit
 
 def dataLoadFromFile(inputFile):
     # Get the file from the request
@@ -20,8 +21,7 @@ def dataLoadFromFile(inputFile):
         logs.writeLog("Data Load Terminated.", "ERROR")
         httpResponse = f"Data already exist in database for {filename} , please try data load for any other File."
     else:
-        logs.writeLog(f"Data Load Initiated from File: {filename}", "INFO")    
-        print("I am in else")  
+        logs.writeLog(f"Data Load Initiated from File: {filename}", "INFO")
         flResponse = loadFromFile(inputFile)
         if flResponse > 0:
             httpResponse = f"Data Loaded from File:{filename} successfully. Total {flResponse} records created in database."
@@ -63,6 +63,7 @@ def loadFromFile(inputFile):
       # Load the contents of the file into a string
     file_path = os.path.join(directory_path, filename)
     file_content = frf.read_file_content(file_path)
+   
 
     # Add enty in history table for this file
     loadHistoryResults = val.createLoadHistoryInDB(source)
@@ -91,19 +92,20 @@ def loadDataInDB(source, filename, file_content):
     count=0
      # Initialize DB Connection    
     conn = sq.getconnection()
-    
-    # Code to slpit the contents based on Token limit  
-    chunks = ge.generatetokens(file_content)
-    for i, chunk in enumerate(chunks):
-        content_parts = str(i+1)+ "/" + str(len(chunks))
-        content_metadata = chunk
-        content = chunk
-        embedding = ge.generateEmbedding(content)
-        embedding_list = embedding.tolist()
-        data = (source, filename, content, content_metadata, content_parts, embedding_list[0])                
-        # Insert records in Database table
-        dataRecords.append(data)
-        
+    # Code to slpit the contents based on Token limit 
+    contentChunks = csplit.contentspiltter(file_content)
+    for contentChunk in contentChunks:
+        file_content = contentChunk.page_content 
+        chunks = ge.generatetokens(file_content)
+        for i, chunk in enumerate(chunks):
+            content_parts = str(i+1)+ "/" + str(len(chunks))
+            content_metadata = chunk
+            content = chunk
+            embedding = ge.generateEmbedding(content)
+            embedding_list = embedding.tolist()
+            data = (source, filename, content, content_metadata, content_parts, embedding_list[0])                
+            # Insert records in Database table
+            dataRecords.append(data)        
     count = len(dataRecords)
     sq.createBulkRecords(conn, dataRecords)              
     # sq.create_records(conn, data)

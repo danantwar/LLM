@@ -6,6 +6,7 @@ import SQL_Functions as sq
 import generateEmbeding as ge
 import validateDataLoad as val
 import DataLoadLogging as logs
+import contentSplitter as csplit
 
 def loadFromWeb(url):
     dataExists = checkDataExists(url)
@@ -72,24 +73,26 @@ def remove_extra_line_breaks(text):
 #-----------------------------------------------------------------    
 def loadDataInDB(source, url, web_content):
     content_metadata = web_content
-    content = web_content  
-    # Initialize DB Connection
-    conn = sq.getconnection() 
-    # Code to slpit the contents based on Token limit   
-    chunks = ge.generatetokens(content)
+    #content = web_content
     dataRecords = []
     count = 0
-    for i, chunk in enumerate(chunks):
-        content_parts = str(i+1)+ "/" + str(len(chunks))
-        content_metadata = content_metadata
-        content = chunk
-        embedding = ge.generateEmbedding(content)
-        embedding_list = embedding.tolist()
-        data = (source, url, content, content_metadata, content_parts, embedding_list[0])             
-        # Insert records in Database table            
-        dataRecords.append(data)
-        count = len(dataRecords)
-    
+    # Initialize DB Connection
+    conn = sq.getconnection() 
+    # Code to slpit the contents based on Token limit
+    contentChunks = csplit.contentspiltter(web_content)
+    for contentChunk in contentChunks:
+        file_content = contentChunk.page_content 
+        chunks = ge.generatetokens(file_content)        
+        for i, chunk in enumerate(chunks):
+            content_parts = str(i+1)+ "/" + str(len(chunks))
+            content_metadata = content_metadata
+            content = chunk
+            embedding = ge.generateEmbedding(content)
+            embedding_list = embedding.tolist()
+            data = (source, url, content, content_metadata, content_parts, embedding_list[0])             
+            # Insert records in Database table            
+            dataRecords.append(data)
+    count = len(dataRecords)    
     sq.createBulkRecords(conn, dataRecords)   
     # Close DB Connection
     conn.close()
@@ -97,25 +100,27 @@ def loadDataInDB(source, url, web_content):
     return count
 #-----------------------------------------------------------------
 def loadKBDataInDB(source, url, web_content, web_metadata):
-
-    content_metadata = web_metadata
-    content = web_content
-    # Initialize DB Connection
-    conn = sq.getconnection() 
-    # Code to slpit the contents based on Token limit   
-    chunks = ge.generatetokens(content)
     dataRecords = []
     count = 0
-    for i, chunk in enumerate(chunks):
-        content_parts = str(i+1)+ "/" + str(len(chunks))
-        content_metadata = content_metadata
-        content = chunk
-        embedding = ge.generateEmbedding(content)
-        embedding_list = embedding.tolist()
-        data = (source, url, content, content_metadata, content_parts, embedding_list[0])             
-        # Insert records in Database table            
-        dataRecords.append(data)
-        count = len(dataRecords)  
+    content_metadata = web_metadata
+    #content = web_content
+    # Initialize DB Connection
+    conn = sq.getconnection() 
+    # Code to slpit the contents based on Token limit
+    contentChunks = csplit.contentspiltter(web_content)
+    for contentChunk in contentChunks:
+        file_content = contentChunk.page_content 
+        chunks = ge.generatetokens(file_content)
+        for i, chunk in enumerate(chunks):
+            content_parts = str(i+1)+ "/" + str(len(chunks))
+            content_metadata = content_metadata
+            content = chunk
+            embedding = ge.generateEmbedding(content)
+            embedding_list = embedding.tolist()
+            data = (source, url, content, content_metadata, content_parts, embedding_list[0])             
+            # Insert records in Database table            
+            dataRecords.append(data)
+    count = len(dataRecords)  
     sq.createBulkRecords(conn, dataRecords)   
     # Close DB Connection
     conn.close()

@@ -8,6 +8,7 @@ import generateEmbeding as ge
 import DataLoadLogging as logs
 import validateDataLoad as val
 import configs as config
+import contentSplitter as csplit
 
 def loadFromHelixFull():
     source = "HELIX"
@@ -211,26 +212,25 @@ def loadDataInDB(args):
         #     # Insert records in Database table            
         #     sq.create_records(conn, data)
             
-        # Code to slpit the contents based on Token limit          
-        chunks = ge.generatetokens(record_data)
-        
-        for i, chunk in enumerate(chunks):
-            content_parts = str(i+1)+ "/" + str(len(chunks))
-            content_metadata = record_metadata
-            content = chunk
-            embedding = ge.generateEmbedding(content)
-            embedding_list = embedding.tolist()
-            #embeddings = ai.generateEmbeddings(content, "text-embedding-ada-002")
-            #data = (source, filename, content, content_metadata, content_parts)
-            data = (source, reference, content, content_metadata, content_parts, embedding_list[0])
-            
+        # Code to slpit the contents based on Token limit
+        contentChunks = csplit.contentspiltter(record_data)
+        for contentChunk in contentChunks:
+            file_content = contentChunk.page_content 
+            chunks = ge.generatetokens(file_content)                 
+            for i, chunk in enumerate(chunks):
+                content_parts = str(i+1)+ "/" + str(len(chunks))
+                content_metadata = record_metadata
+                content = chunk
+                embedding = ge.generateEmbedding(content)
+                embedding_list = embedding.tolist()
+                #embeddings = ai.generateEmbeddings(content, "text-embedding-ada-002")
+                #data = (source, filename, content, content_metadata, content_parts)
+                data = (source, reference, content, content_metadata, content_parts, embedding_list[0])
             # Insert 1 record in Database table         
-            #sq.createRecords(conn, data)
-            
+            #sq.createRecords(conn, data)            
             # Insert bulk record in Database table
-            dataRecords.append(data)
-            count = len(dataRecords)
-            
+                dataRecords.append(data)
+    count = len(dataRecords)            
     sq.createBulkRecords(conn, dataRecords)   
     # Close DB Connection
     conn.close()

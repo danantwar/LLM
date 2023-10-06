@@ -50,8 +50,8 @@ def read_file_content(file_path):
     else:
         return "Unsupported file format"
 
-#file_path = r'C:\Users\jagadish.patil\myTestEnv\Files\Impact of AI on Service Management.docx'  # Replace with your file path
+# file_path = r'C:\Users\jagadish.patil\myTestEnv\Files\Information Access Control Policy v2.2.pdf'
 
-#file_content = read_file_content(file_path)
-#print("File Content:")
-#print(file_content)
+# file_content = read_file_content(file_path)
+# print("File Content:")
+# print(file_content)
